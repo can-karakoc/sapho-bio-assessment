@@ -1,0 +1,272 @@
+[
+  {
+    "id": "post-001",
+    "influencerId": "inf-001",
+    "text": "Just completed our quarterly FDA inspection - 100% compliance! Key takeaway: Environmental monitoring isn't just about passing inspections, it's about building a culture of quality. Our team's dedication to USP 797 standards continues to set the bar. #503B #CompoundingPharmacy",
+    "url": "https://www.linkedin.com/posts/sarah-mitchell-pharmacy_503b-compoundingpharmacy-activity-001",
+    "postedAt": "2026-09-01T14:30:00Z",
+    "reactions": 187,
+    "comments": 23
+  },
+  {
+    "id": "post-002",
+    "influencerId": "inf-002",
+    "text": "New FDA guidance on 503B outsourcing facilities dropped today. The emphasis on process validation is a game-changer. Time to review your SOPs! Thread below with my initial analysis... 🧵",
+    "url": "https://www.linkedin.com/posts/james-chen-pharmd_fda-guidance-503b-activity-002",
+    "postedAt": "2026-08-28T09:15:00Z",
+    "reactions": 312,
+    "comments": 45
+  },
+  {
+    "id": "post-003",
+    "influencerId": "inf-003",
+    "text": "Endotoxin testing results that make you proud 💯 Our new LAL method cut testing time by 40% while maintaining the same sensitivity. Quality and efficiency CAN coexist. Shoutout to our amazing lab team!",
+    "url": "https://www.linkedin.com/posts/maria-rodriguez-qa_endotoxin-testing-activity-003",
+    "postedAt": "2026-09-05T16:45:00Z",
+    "reactions": 156,
+    "comments": 18
+  },
+  {
+    "id": "post-004",
+    "influencerId": "inf-004",
+    "text": "The 503B market is projected to grow 18% YoY. But growth means nothing without quality. As we expand, our commitment to patient safety remains non-negotiable. What are other leaders doing to scale responsibly?",
+    "url": "https://www.linkedin.com/posts/robert-thompson-ceo_503b-growth-activity-004",
+    "postedAt": "2026-08-25T11:20:00Z",
+    "reactions": 421,
+    "comments": 67
+  },
+  {
+    "id": "post-005",
+    "influencerId": "inf-005",
+    "text": "Fascinating case study: Environmental monitoring trends over 12 months revealed a subtle pattern that led us to identify a HEPA filter issue BEFORE it impacted product quality. This is why data analysis matters in sterile compounding.",
+    "url": "https://www.linkedin.com/posts/emily-patel-phd_environmental-monitoring-activity-005",
+    "postedAt": "2026-09-03T13:00:00Z",
+    "reactions": 203,
+    "comments": 31
+  },
+  {
+    "id": "post-006",
+    "influencerId": "inf-006",
+    "text": "Invested in automated compounding technology last quarter. The ROI is clear: 60% reduction in batch errors, 35% faster throughput, and most importantly - a safer process for our team. Innovation drives excellence.",
+    "url": "https://www.linkedin.com/posts/michael-lee-operations_automation-compounding-activity-006",
+    "postedAt": "2026-08-30T10:30:00Z",
+    "reactions": 267,
+    "comments": 42
+  },
+  {
+    "id": "post-007",
+    "influencerId": "inf-007",
+    "text": "Preparing for an FDA inspection? Here's what they're REALLY looking at in 2026: 1) Process validation docs 2) Environmental monitoring trends 3) Personnel training records 4) CAPA effectiveness. Get these right and you're 90% there.",
+    "url": "https://www.linkedin.com/posts/jennifer-williams-regulatory_fda-inspection-tips-activity-007",
+    "postedAt": "2026-09-04T08:45:00Z",
+    "reactions": 389,
+    "comments": 56
+  },
+  {
+    "id": "post-008",
+    "influencerId": "inf-008",
+    "text": "Honored to speak at the National Compounding Pharmacy Conference next month. My session: 'Building a Culture of Compliance That Doesn't Kill Innovation.' Hope to see many of you there!",
+    "url": "https://www.linkedin.com/posts/david-kumar-rph_conference-speaking-activity-008",
+    "postedAt": "2026-08-27T15:20:00Z",
+    "reactions": 178,
+    "comments": 29
+  },
+  {
+    "id": "post-009",
+    "influencerId": "inf-009",
+    "text": "Stability testing update: Our new preservative system for multi-dose vials just hit 6-month stability with zero degradation. The science of formulation development never stops being exciting! 🔬",
+    "url": "https://www.linkedin.com/posts/lisa-anderson-rd_formulation-stability-activity-009",
+    "postedAt": "2026-09-06T12:15:00Z",
+    "reactions": 142,
+    "comments": 21
+  },
+  {
+    "id": "post-010",
+    "influencerId": "inf-010",
+    "text": "Daily reminder: Your release testing is only as good as your analytical method validation. Saw too many recalls this year from inadequate method development. Don't cut corners on the science.",
+    "url": "https://www.linkedin.com/posts/thomas-nguyen-qc_quality-control-activity-010",
+    "postedAt": "2026-09-02T09:30:00Z",
+    "reactions": 198,
+    "comments": 27
+  },
+  {
+    "id": "post-011",
+    "influencerId": "inf-001",
+    "text": "USP 800 compliance question I keep getting: 'Do we REALLY need separate rooms for hazardous compounding?' Short answer: Yes. Long answer: Read the monograph. Patient and staff safety isn't negotiable.",
+    "url": "https://www.linkedin.com/posts/sarah-mitchell-pharmacy_usp800-safety-activity-011",
+    "postedAt": "2026-08-29T14:10:00Z",
+    "reactions": 234,
+    "comments": 38
+  },
+  {
+    "id": "post-012",
+    "influencerId": "inf-002",
+    "text": "Compliance tip: Your training records should tell a story. Not just 'completed training' but 'demonstrated competency in aseptic technique with documented proficiency testing.' Auditors notice the difference.",
+    "url": "https://www.linkedin.com/posts/james-chen-pharmd_training-compliance-activity-012",
+    "postedAt": "2026-09-07T11:45:00Z",
+    "reactions": 276,
+    "comments": 34
+  },
+  {
+    "id": "post-013",
+    "influencerId": "inf-003",
+    "text": "Celebrating our lab team today! 10,000 consecutive sterility tests without a single false positive. This is what excellence in technique and process control looks like. 🎯",
+    "url": "https://www.linkedin.com/posts/maria-rodriguez-qa_lab-excellence-activity-013",
+    "postedAt": "2026-08-26T16:30:00Z",
+    "reactions": 167,
+    "comments": 19
+  },
+  {
+    "id": "post-014",
+    "influencerId": "inf-004",
+    "text": "Drug shortage crisis hits home. We've fielded 200+ requests this month for critical medications. The 503B industry exists for moments like this - but we must balance demand with uncompromising quality.",
+    "url": "https://www.linkedin.com/posts/robert-thompson-ceo_drug-shortage-activity-014",
+    "postedAt": "2026-09-01T10:00:00Z",
+    "reactions": 512,
+    "comments": 89
+  },
+  {
+    "id": "post-015",
+    "influencerId": "inf-005",
+    "text": "Microbiology Monday 🔬: Why we use TSA and SDA for environmental monitoring. Understanding the 'why' behind your methods makes you a better scientist. Thread with the full breakdown...",
+    "url": "https://www.linkedin.com/posts/emily-patel-phd_microbiology-monday-activity-015",
+    "postedAt": "2026-09-08T08:00:00Z",
+    "reactions": 189,
+    "comments": 26
+  },
+  {
+    "id": "post-016",
+    "influencerId": "inf-006",
+    "text": "Facility design matters. Our new ISO 5 cleanroom layout reduced personnel flow conflicts by 80%. Proper planning = better outcomes. Happy to share our layout approach if anyone's interested!",
+    "url": "https://www.linkedin.com/posts/michael-lee-operations_cleanroom-design-activity-016",
+    "postedAt": "2026-08-31T13:20:00Z",
+    "reactions": 221,
+    "comments": 44
+  },
+  {
+    "id": "post-017",
+    "influencerId": "inf-007",
+    "text": "Controversial take: The industry focuses too much on passing inspections and not enough on continuous improvement. Compliance should be the floor, not the ceiling. Who's with me?",
+    "url": "https://www.linkedin.com/posts/jennifer-williams-regulatory_continuous-improvement-activity-017",
+    "postedAt": "2026-09-05T14:45:00Z",
+    "reactions": 356,
+    "comments": 78
+  },
+  {
+    "id": "post-018",
+    "influencerId": "inf-008",
+    "text": "Mentoring the next generation of compounding pharmacists is the most rewarding part of my job. Today's students ask BETTER questions than I did 20 years ago. The future is bright! 🌟",
+    "url": "https://www.linkedin.com/posts/david-kumar-rph_mentoring-pharmacy-activity-018",
+    "postedAt": "2026-09-03T15:30:00Z",
+    "reactions": 145,
+    "comments": 22
+  },
+  {
+    "id": "post-019",
+    "influencerId": "inf-009",
+    "text": "R&D update: Successfully formulated a preservative-free ophthalmic solution with 90-day stability. The challenge was balancing tonicity, pH, and sterility. Science wins again! 💪",
+    "url": "https://www.linkedin.com/posts/lisa-anderson-rd_research-ophthalmic-activity-019",
+    "postedAt": "2026-08-28T11:00:00Z",
+    "reactions": 134,
+    "comments": 17
+  },
+  {
+    "id": "post-020",
+    "influencerId": "inf-010",
+    "text": "HPLC troubleshooting tip: If your retention times are drifting, check your mobile phase pH FIRST. Saved me hours this week. What's your go-to troubleshooting sequence?",
+    "url": "https://www.linkedin.com/posts/thomas-nguyen-qc_hplc-tips-activity-020",
+    "postedAt": "2026-09-06T10:15:00Z",
+    "reactions": 167,
+    "comments": 31
+  },
+  {
+    "id": "post-021",
+    "influencerId": "inf-001",
+    "text": "Personal milestone: 15 years in sterile compounding. From pharmacy tech to Director. Grateful for every mentor, challenge, and lesson learned. This industry changes lives - including mine.",
+    "url": "https://www.linkedin.com/posts/sarah-mitchell-pharmacy_career-milestone-activity-021",
+    "postedAt": "2026-09-04T17:00:00Z",
+    "reactions": 298,
+    "comments": 52
+  },
+  {
+    "id": "post-022",
+    "influencerId": "inf-002",
+    "text": "Deviation investigation masterclass: Root cause analysis isn't about blame, it's about understanding system failures. Our latest CAPA closed a gap that existed for 3 years. Details matter.",
+    "url": "https://www.linkedin.com/posts/james-chen-pharmd_capa-root-cause-activity-022",
+    "postedAt": "2026-08-30T14:30:00Z",
+    "reactions": 243,
+    "comments": 36
+  },
+  {
+    "id": "post-023",
+    "influencerId": "inf-003",
+    "text": "Hosting a webinar next week: 'Advanced Environmental Monitoring Strategies for 503B Facilities.' Free registration, limited spots. Link in comments. Let's level up together! 📈",
+    "url": "https://www.linkedin.com/posts/maria-rodriguez-qa_webinar-registration-activity-023",
+    "postedAt": "2026-09-02T12:45:00Z",
+    "reactions": 412,
+    "comments": 68
+  },
+  {
+    "id": "post-024",
+    "influencerId": "inf-004",
+    "text": "Leadership lesson from 25 years in pharma: Hire for values, train for skills. Our best team members weren't necessarily the most experienced - they were the most committed to our mission.",
+    "url": "https://www.linkedin.com/posts/robert-thompson-ceo_leadership-hiring-activity-024",
+    "postedAt": "2026-08-27T09:30:00Z",
+    "reactions": 523,
+    "comments": 94
+  },
+  {
+    "id": "post-025",
+    "influencerId": "inf-005",
+    "text": "Microorganism ID surprise: Found Micrococcus luteus in our monitoring data - an environmental isolate that told us about a gowning procedure gap. Every colony tells a story if you listen.",
+    "url": "https://www.linkedin.com/posts/emily-patel-phd_microbiology-investigation-activity-025",
+    "postedAt": "2026-09-07T15:20:00Z",
+    "reactions": 178,
+    "comments": 28
+  },
+  {
+    "id": "post-026",
+    "influencerId": "inf-006",
+    "text": "Operations efficiency hack: We mapped our entire compounding workflow using value stream analysis. Eliminated 4 non-value-added steps and saved 15 hours per week. Lean manufacturing principles work!",
+    "url": "https://www.linkedin.com/posts/michael-lee-operations_lean-efficiency-activity-026",
+    "postedAt": "2026-09-01T11:15:00Z",
+    "reactions": 256,
+    "comments": 41
+  },
+  {
+    "id": "post-027",
+    "influencerId": "inf-007",
+    "text": "FDA Warning Letter analysis: 73% of 503B citations this year involved inadequate cleaning validation. This is a solved problem, folks. Do the science, document it properly, and stick to your protocol.",
+    "url": "https://www.linkedin.com/posts/jennifer-williams-regulatory_fda-warning-letters-activity-027",
+    "postedAt": "2026-08-29T13:40:00Z",
+    "reactions": 387,
+    "comments": 62
+  },
+  {
+    "id": "post-028",
+    "influencerId": "inf-008",
+    "text": "Industry advocacy update: Met with FDA officials this week about 503B guidance clarity. Progress is slow but real. The work continues. Your voices matter - stay engaged!",
+    "url": "https://www.linkedin.com/posts/david-kumar-rph_advocacy-fda-activity-028",
+    "postedAt": "2026-09-05T16:00:00Z",
+    "reactions": 334,
+    "comments": 53
+  },
+  {
+    "id": "post-029",
+    "influencerId": "inf-009",
+    "text": "Formulation chemistry nerd moment: Finally cracked the stability issue on our pH-sensitive peptide formulation using a novel buffer system. 6 months of trials, worth every iteration. 🧪",
+    "url": "https://www.linkedin.com/posts/lisa-anderson-rd_formulation-chemistry-activity-029",
+    "postedAt": "2026-08-26T14:20:00Z",
+    "reactions": 126,
+    "comments": 15
+  },
+  {
+    "id": "post-030",
+    "influencerId": "inf-010",
+    "text": "Quality control PSA: Calibrate your instruments. Qualify your analysts. Validate your methods. Release testing isn't the place for shortcuts. Every batch affects a patient somewhere.",
+    "url": "https://www.linkedin.com/posts/thomas-nguyen-qc_quality-control-psa-activity-030",
+    "postedAt": "2026-09-08T07:45:00Z",
+    "reactions": 215,
+    "comments": 33
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "inf-001",
+    "name": "Dr. Sarah Mitchell",
+    "title": "Director of Pharmacy Operations",
+    "company": "SterileRx Compounding",
+    "linkedinUrl": "https://www.linkedin.com/in/sarah-mitchell-pharmacy",
+    "followerCount": 12500,
+    "selectionRationale": "Leading voice in 503B sterile compounding regulations; frequently discusses FDA compliance and quality standards"
+  },
+  {
+    "id": "inf-002",
+    "name": "James Chen, PharmD",
+    "title": "Chief Compliance Officer",
+    "company": "CompoundCare Solutions",
+    "linkedinUrl": "https://www.linkedin.com/in/james-chen-pharmd",
+    "followerCount": 8300,
+    "selectionRationale": "Expert in USP 797/800 implementation; active in compounding pharmacy regulatory discussions"
+  },
+  {
+    "id": "inf-003",
+    "name": "Dr. Maria Rodriguez",
+    "title": "VP of Quality Assurance",
+    "company": "PharmaBlend Compounders",
+    "linkedinUrl": "https://www.linkedin.com/in/maria-rodriguez-qa",
+    "followerCount": 15700,
+    "selectionRationale": "Thought leader in sterile release testing and environmental monitoring for compounding facilities"
+  },
+  {
+    "id": "inf-004",
+    "name": "Robert Thompson",
+    "title": "CEO & Founder",
+    "company": "Precision Sterile Labs",
+    "linkedinUrl": "https://www.linkedin.com/in/robert-thompson-ceo",
+    "followerCount": 22100,
+    "selectionRationale": "Industry veteran; shares insights on 503B business operations and market trends"
+  },
+  {
+    "id": "inf-005",
+    "name": "Dr. Emily Patel, PhD",
+    "title": "Director of Microbiology",
+    "company": "BioSafe Compounding",
+    "linkedinUrl": "https://www.linkedin.com/in/emily-patel-phd",
+    "followerCount": 9800,
+    "selectionRationale": "Specialist in endotoxin testing and environmental monitoring; frequent contributor to compounding pharmacy science"
+  },
+  {
+    "id": "inf-006",
+    "name": "Michael Lee",
+    "title": "VP of Operations",
+    "company": "SterileSource Pharmacy",
+    "linkedinUrl": "https://www.linkedin.com/in/michael-lee-operations",
+    "followerCount": 11200,
+    "selectionRationale": "Focus on operational excellence and automation in compounding; discusses facility design and workflow optimization"
+  },
+  {
+    "id": "inf-007",
+    "name": "Dr. Jennifer Williams",
+    "title": "Regulatory Affairs Manager",
+    "company": "CleanRoom Compounders",
+    "linkedinUrl": "https://www.linkedin.com/in/jennifer-williams-regulatory",
+    "followerCount": 7400,
+    "selectionRationale": "Deep expertise in FDA inspections and 503B compliance strategies; shares case studies and lessons learned"
+  },
+  {
+    "id": "inf-008",
+    "name": "David Kumar, RPh",
+    "title": "President",
+    "company": "Apex Sterile Compounding",
+    "linkedinUrl": "https://www.linkedin.com/in/david-kumar-rph",
+    "followerCount": 13900,
+    "selectionRationale": "Advocate for industry best practices; active in compounding pharmacy associations and education"
+  },
+  {
+    "id": "inf-009",
+    "name": "Dr. Lisa Anderson",
+    "title": "Director of R&D",
+    "company": "InnovaCompound Labs",
+    "linkedinUrl": "https://www.linkedin.com/in/lisa-anderson-rd",
+    "followerCount": 10600,
+    "selectionRationale": "Innovator in formulation development and stability testing for sterile compounded products"
+  },
+  {
+    "id": "inf-010",
+    "name": "Thomas Nguyen",
+    "title": "Quality Control Manager",
+    "company": "PurePharma Compounding",
+    "linkedinUrl": "https://www.linkedin.com/in/thomas-nguyen-qc",
+    "followerCount": 6800,
+    "selectionRationale": "Specialist in analytical methods and release testing; shares practical QC tips for compounding operations"
+  }
+]
