@@ -11,7 +11,7 @@ interface HistoryViewProps {
 }
 
 export function HistoryView({ influencers }: HistoryViewProps) {
-  const { activities, updateActivityOutcome } = useSessionActivity();
+  const { activities } = useSessionActivity();
 
   // Update header count whenever activities change
   useEffect(() => {
