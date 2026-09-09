@@ -122,6 +122,8 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
+CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+
 RESPONSE:`;
   }
 
@@ -234,6 +236,8 @@ Write a professional, engaging LinkedIn comment that:
 5. Achieves the specified goal without being overly salesy
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
+
+CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
 
 RESPONSE:`;
   }
@@ -377,6 +381,8 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
+CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+
 RESPONSE:`;
 
         const stream = await groq.chat.completions.create({
@@ -436,6 +442,8 @@ Write a professional, engaging LinkedIn comment that:
 5. Achieves the specified goal without being overly salesy
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
+
+CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
 
 RESPONSE:`;
 
