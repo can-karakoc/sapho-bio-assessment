@@ -12,10 +12,31 @@ interface QueueListProps {
   influencers: Influencer[];
 }
 
+const INFLUENCER_PREFS_KEY = "saphoEngage.v1.influencerPrefs";
+
+function loadMutedInfluencers(): Set<string> {
+  try {
+    const stored = localStorage.getItem(INFLUENCER_PREFS_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return new Set(parsed.muted || []);
+    }
+  } catch {
+    // Fall through
+  }
+  return new Set();
+}
+
 export function QueueList({ posts, influencers }: QueueListProps) {
   const searchParams = useSearchParams();
   const { activities } = useSessionActivity(); // Listen for activity changes
   const [postedIds, setPostedIds] = useState<Set<string>>(new Set());
+  const [mutedInfluencers, setMutedInfluencers] = useState<Set<string>>(new Set());
+
+  // Load muted influencers
+  useEffect(() => {
+    setMutedInfluencers(loadMutedInfluencers());
+  }, []);
 
   // Re-check localStorage whenever activities change (posted/skipped cards)
   useEffect(() => {
@@ -35,6 +56,8 @@ export function QueueList({ posts, influencers }: QueueListProps) {
     } catch (err) {
       console.warn("Failed to load posted IDs from localStorage:", err);
     }
+    // Also refresh muted list
+    setMutedInfluencers(loadMutedInfluencers());
   }, [activities]); // Re-run when activities change
 
   // Initialize filters from URL
@@ -51,8 +74,10 @@ export function QueueList({ posts, influencers }: QueueListProps) {
 
   // Apply filters and sort
   const filteredAndSortedPosts = (() => {
-    // 0. First filter out posted/skipped posts
-    const activePosts = posts.filter((post) => !postedIds.has(post.id));
+    // 0. First filter out posted/skipped posts and muted influencers
+    const activePosts = posts.filter(
+      (post) => !postedIds.has(post.id) && !mutedInfluencers.has(post.influencerId)
+    );
 
     // 1. Apply filters
     const filtered = activePosts.filter((post) => {

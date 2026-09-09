@@ -1,7 +1,8 @@
 import { loadInfluencers, loadPosts } from "@/lib/data";
 import { scoreInfluencer } from "@/lib/score";
 import { HeaderWithCounts } from "@/components/HeaderWithCounts";
-import { InfluencerRow } from "@/components/InfluencerRow";
+import { InfluencerList } from "@/components/InfluencerList";
+import { InfluencerActions } from "@/components/InfluencerActions";
 
 export default function InfluencersPage() {
   const influencers = loadInfluencers();
@@ -46,29 +47,14 @@ export default function InfluencersPage() {
               Scored on reach, cadence, resonance, relevance & recency
             </p>
           </div>
-          <div className="flex gap-2 flex-wrap">
-            {/* Secondary button */}
-            <button className="font-sans border border-line bg-surface text-ink text-xs font-medium px-3.5 py-2.5 rounded-sm inline-flex items-center gap-1.5 hover:border-highlight-teal transition-all uppercase tracking-tight">
-              ↻ Recompute
-            </button>
-            {/* Primary button - dark fill */}
-            <button className="font-sans border border-highlight-teal bg-highlight-teal text-surface text-xs font-semibold px-3.5 py-2.5 rounded-sm inline-flex items-center gap-1.5 hover:bg-highlight-teal/90 transition-all uppercase tracking-tight">
-              + Add
-            </button>
-          </div>
+          <InfluencerActions />
         </div>
 
         {/* Influencer list */}
-        <div className="flex flex-col gap-3">
-          {sortedInfluencers.map((inf, index) => (
-            <InfluencerRow
-              key={inf.id}
-              influencer={inf}
-              rank={index + 1}
-              newCount={newCountByInfluencer.get(inf.id) || 0}
-            />
-          ))}
-        </div>
+        <InfluencerList
+          influencers={sortedInfluencers}
+          newCountByInfluencer={newCountByInfluencer}
+        />
 
         {/* Empty state */}
         {sortedInfluencers.length === 0 && (

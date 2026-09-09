@@ -10,13 +10,52 @@ import {
   formatRelevance,
 } from "@/lib/format";
 import type { Influencer } from "@/lib/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface InfluencerRowProps {
   influencer: Influencer;
   rank: number;
   newCount: number;
   isPinned?: boolean;
+  onPinChange?: (influencerId: string, isPinned: boolean) => void;
+  onMuteChange?: (influencerId: string, isMuted: boolean) => void;
+}
+
+const INFLUENCER_PREFS_KEY = "saphoEngage.v1.influencerPrefs";
+
+interface InfluencerPrefs {
+  pinned: Set<string>;
+  muted: Set<string>;
+}
+
+function loadPrefs(): InfluencerPrefs {
+  try {
+    const stored = localStorage.getItem(INFLUENCER_PREFS_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return {
+        pinned: new Set(parsed.pinned || []),
+        muted: new Set(parsed.muted || []),
+      };
+    }
+  } catch {
+    // Fall through to defaults
+  }
+  return { pinned: new Set(), muted: new Set() };
+}
+
+function savePrefs(prefs: InfluencerPrefs) {
+  try {
+    localStorage.setItem(
+      INFLUENCER_PREFS_KEY,
+      JSON.stringify({
+        pinned: Array.from(prefs.pinned),
+        muted: Array.from(prefs.muted),
+      })
+    );
+  } catch (err) {
+    console.warn("Failed to save influencer prefs:", err);
+  }
 }
 
 export function InfluencerRow({
@@ -24,24 +63,52 @@ export function InfluencerRow({
   rank,
   newCount,
   isPinned = false,
+  onPinChange,
+  onMuteChange,
 }: InfluencerRowProps) {
   const [pinned, setPinned] = useState(isPinned);
   const [muted, setMuted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (muted) {
+  // Load initial state from localStorage
+  useEffect(() => {
+    const prefs = loadPrefs();
+    setPinned(prefs.pinned.has(influencer.id));
+    setMuted(prefs.muted.has(influencer.id));
+    setMounted(true);
+  }, [influencer.id]);
+
+  if (!mounted || muted) {
     return null;
   }
 
   const handlePin = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setPinned(!pinned);
+    const newPinned = !pinned;
+    setPinned(newPinned);
+
+    const prefs = loadPrefs();
+    if (newPinned) {
+      prefs.pinned.add(influencer.id);
+    } else {
+      prefs.pinned.delete(influencer.id);
+    }
+    savePrefs(prefs);
+
+    onPinChange?.(influencer.id, newPinned);
   };
 
   const handleMute = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setMuted(true);
+
+    const prefs = loadPrefs();
+    prefs.muted.add(influencer.id);
+    savePrefs(prefs);
+
+    onMuteChange?.(influencer.id, true);
   };
 
   return (
