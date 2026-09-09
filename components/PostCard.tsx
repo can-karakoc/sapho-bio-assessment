@@ -25,23 +25,6 @@ interface PostCardProps {
   showInfluencer?: boolean;
 }
 
-// Helper to load initial status from localStorage
-const getInitialStatus = (postId: string, fileStatus: string | undefined) => {
-  try {
-    const stored = localStorage.getItem("saphoEngage.v1.drafts");
-    if (stored) {
-      const drafts = JSON.parse(stored);
-      const postDraft = drafts[postId];
-      if (postDraft?.status) {
-        return postDraft.status;
-      }
-    }
-  } catch {
-    // Fall back to file status
-  }
-  return fileStatus;
-};
-
 export function PostCard({
   post,
   influencer,
@@ -65,7 +48,6 @@ export function PostCard({
   const [localStatus, setLocalStatus] = useState<
     "new" | "drafted" | "posted" | "skipped" | undefined
   >(post.status);
-  const [mounted, setMounted] = useState(false);
   const [draft, setDraft] = useState<GeneratedResponse | null>(null);
   const [draftText, setDraftText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -75,7 +57,6 @@ export function PostCard({
 
   // Load persisted draft state from localStorage (full state restoration)
   useEffect(() => {
-    setMounted(true);
     try {
       const stored = localStorage.getItem("saphoEngage.v1.drafts");
       if (stored) {
