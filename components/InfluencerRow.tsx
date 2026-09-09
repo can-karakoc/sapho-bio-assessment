@@ -17,6 +17,7 @@ interface InfluencerRowProps {
   rank: number;
   newCount: number;
   isPinned?: boolean;
+  isMuted?: boolean;
   onPinChange?: (influencerId: string, isPinned: boolean) => void;
   onMuteChange?: (influencerId: string, isMuted: boolean) => void;
 }
@@ -63,11 +64,12 @@ export function InfluencerRow({
   rank,
   newCount,
   isPinned = false,
+  isMuted = false,
   onPinChange,
   onMuteChange,
 }: InfluencerRowProps) {
   const [pinned, setPinned] = useState(isPinned);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(isMuted);
   const [mounted, setMounted] = useState(false);
 
   // Load initial state from localStorage
@@ -78,7 +80,7 @@ export function InfluencerRow({
     setMounted(true);
   }, [influencer.id]);
 
-  if (!mounted || muted) {
+  if (!mounted) {
     return null;
   }
 
@@ -102,13 +104,18 @@ export function InfluencerRow({
   const handleMute = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setMuted(true);
+    const newMuted = !muted;
+    setMuted(newMuted);
 
     const prefs = loadPrefs();
-    prefs.muted.add(influencer.id);
+    if (newMuted) {
+      prefs.muted.add(influencer.id);
+    } else {
+      prefs.muted.delete(influencer.id);
+    }
     savePrefs(prefs);
 
-    onMuteChange?.(influencer.id, true);
+    onMuteChange?.(influencer.id, newMuted);
   };
 
   return (
@@ -116,7 +123,7 @@ export function InfluencerRow({
       href={`/influencers/${influencer.id}`}
       className={`block bg-surface border rounded-lg shadow-sm hover:shadow transition-all cursor-pointer ${
         pinned ? "border-highlight-teal" : "border-line"
-      }`}
+      } ${muted ? "opacity-40 hover:opacity-60" : ""}`}
     >
       {/* TALLER CARD - increased padding */}
       <div className="grid grid-cols-[34px_52px_1fr_auto] gap-4 items-center p-6 md:p-5">
@@ -209,8 +216,12 @@ export function InfluencerRow({
             </button>
             <button
               onClick={handleMute}
-              className="border border-line text-muted w-[32px] h-[32px] rounded-sm grid place-items-center text-sm hover:border-highlight-teal hover:text-highlight-teal transition-all"
-              title="Mute"
+              className={`border w-[32px] h-[32px] rounded-sm grid place-items-center text-sm transition-all ${
+                muted
+                  ? "bg-muted/20 text-muted border-muted"
+                  : "border-line text-muted hover:border-highlight-teal hover:text-highlight-teal"
+              }`}
+              title={muted ? "Unmute" : "Mute"}
             >
               🔇
             </button>

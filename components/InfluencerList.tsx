@@ -125,12 +125,11 @@ export function InfluencerList({ influencers, newCountByInfluencer, candidates }
     return null;
   }
 
-  // Filter out muted, then sort by pinned + score
+  // Sort by pinned + score (keep muted, they'll be greyed out)
   const pinnedSet = new Set(prefs.pinned);
   const mutedSet = new Set(prefs.muted);
 
-  const visibleInfluencers = displayedInfluencers
-    .filter((inf) => !mutedSet.has(inf.id))
+  const sortedInfluencers = displayedInfluencers
     .sort((a, b) => {
       const aPin = pinnedSet.has(a.id);
       const bPin = pinnedSet.has(b.id);
@@ -151,13 +150,14 @@ export function InfluencerList({ influencers, newCountByInfluencer, candidates }
       )}
 
       {/* Influencer rows */}
-      {visibleInfluencers.map((inf, index) => (
+      {sortedInfluencers.map((inf, index) => (
         <InfluencerRow
           key={inf.id}
           influencer={inf}
           rank={index + 1}
           newCount={newCountByInfluencer.get(inf.id) || 0}
           isPinned={pinnedSet.has(inf.id)}
+          isMuted={mutedSet.has(inf.id)}
           onPinChange={handlePinChange}
           onMuteChange={handleMuteChange}
         />
