@@ -1,12 +1,19 @@
-import { loadInfluencers, loadPosts } from "@/lib/data";
+import { loadInfluencers, loadPosts, loadDiscovery } from "@/lib/data";
 import { scoreInfluencer } from "@/lib/score";
 import { HeaderWithCounts } from "@/components/HeaderWithCounts";
 import { InfluencerList } from "@/components/InfluencerList";
 import { InfluencerActions } from "@/components/InfluencerActions";
+import type { DiscoveredInfluencer } from "@/lib/types";
+
+function cleanLinkedInUrl(url: string): string {
+  // Strip query params and trailing slashes for comparison
+  return url.split('?')[0].replace(/\/$/, '').toLowerCase();
+}
 
 export default function InfluencersPage() {
   const influencers = loadInfluencers();
   const posts = loadPosts();
+  const allCandidates = loadDiscovery();
 
   const influencersWithScores = influencers.map((inf) => {
     const scoringResult = scoreInfluencer(inf.signals);
@@ -20,6 +27,15 @@ export default function InfluencersPage() {
   const sortedInfluencers = [...influencersWithScores].sort(
     (a, b) => (b.score ?? 0) - (a.score ?? 0)
   );
+
+  // Filter candidates: exclude anyone already on the curated list
+  const curatedUrls = new Set(
+    influencers.map((inf) => cleanLinkedInUrl(inf.linkedinUrl || ''))
+  );
+  const newCandidates = allCandidates
+    .filter((cand) => !curatedUrls.has(cleanLinkedInUrl(cand.linkedinUrl)))
+    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+    .slice(0, 5) as DiscoveredInfluencer[]; // Top 5 for client
 
   const newCountByInfluencer = new Map<string, number>();
   posts.forEach((post) => {
@@ -54,6 +70,7 @@ export default function InfluencersPage() {
         <InfluencerList
           influencers={sortedInfluencers}
           newCountByInfluencer={newCountByInfluencer}
+          candidates={newCandidates}
         />
 
         {/* Empty state */}

@@ -1,8 +1,17 @@
 "use client";
 
+declare global {
+  interface Window {
+    __recomputeInfluencers?: () => void;
+  }
+}
+
 export function InfluencerActions() {
   const handleRecompute = () => {
-    alert('Recompute would recalculate all influencer scores based on latest engagement data.');
+    // Call the recompute function exposed by InfluencerList
+    if (typeof window !== 'undefined' && window.__recomputeInfluencers) {
+      window.__recomputeInfluencers();
+    }
   };
 
   const handleAdd = () => {

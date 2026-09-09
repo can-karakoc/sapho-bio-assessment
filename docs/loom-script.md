@@ -79,11 +79,13 @@ Target length ~5-6 minutes. Bracketed lines are stage directions; the rest is sp
 
 ---
 
-### 9. Live versus roadmap, and close  (~40s)
+### 9. Live versus roadmap, and close  (~50s)
 
-"To be clear about scope, here is what is live today: influencer discovery and auditable ranking, knowledge-grounded generation with configurable goal, voice, and instructions, assisted posting, a searchable response history, event logging, and a swappable model layer across Gemini and Groq. And here is what is intentionally scoped as roadmap, each represented as a labeled placeholder rather than faked: aggregate measurement dashboards, a side-by-side model-comparison view, automated engagement tracking, and conversation threading, all of which depend on data access this prototype deliberately does not assume."
+"To be clear about scope, here is what is live today: influencer discovery and auditable ranking, knowledge-grounded generation with configurable goal, voice, and instructions, assisted posting, a searchable response history, event logging, and a swappable model layer across Gemini and Groq."
 
-"So the full loop is: discover and rank the right influencers, triage their posts, generate a grounded and on-brand response, evaluate and tune it, publish it with a human in the loop, and log the outcome so the system can learn. The next things I would build are the aggregate metrics dashboard and the model-comparison view, both of which plug straight into the logging that is already in place. Thanks for watching."
+"And here is what is intentionally scoped as roadmap, each represented as a labeled placeholder rather than faked. First, the aggregate measurement dashboards and a side-by-side model-comparison view. Second, a closed engagement loop, which has two halves: response-stats tracking, where the tool reads back the likes and comments each posted response actually earns and feeds that signal into the next draft, and a two-way responding layer, so that when someone engages with our comment the team can reply to them directly and turn a single post into an ongoing conversation. Each of these depends on LinkedIn partner-level data access this prototype deliberately does not assume, which is why they are stubbed rather than faked."
+
+"So the full loop is: discover and rank the right influencers, triage their posts, generate a grounded and on-brand response, evaluate and tune it, publish it with a human in the loop, and log the outcome so the system can learn. The nearest next steps are the aggregate metrics dashboard and the model-comparison view, both of which plug straight into the logging that is already in place, followed by that engagement-tracking and conversation layer once partner API access is available. Thanks for watching."
 
 ---
 

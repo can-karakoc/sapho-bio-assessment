@@ -3,6 +3,7 @@ import { Roboto_Mono, Inter, Archivo } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context/AppContext";
 import { SessionActivityProvider } from "@/lib/context/SessionActivityContext";
+import { Toast } from "@/components/Toast";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -42,7 +43,10 @@ export default function RootLayout({
         className={`${robotoMono.variable} ${inter.variable} ${archivo.variable} font-sans`}
       >
         <AppProvider>
-          <SessionActivityProvider>{children}</SessionActivityProvider>
+          <SessionActivityProvider>
+            {children}
+            <Toast />
+          </SessionActivityProvider>
         </AppProvider>
       </body>
     </html>
