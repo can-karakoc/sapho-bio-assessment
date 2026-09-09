@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="116" fill="#12262A"/>
+  <!-- speech-bubble tail -->
+  <path d="M170 300 L150 392 L232 322 Z" fill="#D2FFC8"/>
+  <!-- speech bubble -->
+  <rect x="112" y="120" width="288" height="212" rx="46" fill="#D2FFC8"/>
+  <!-- rising engagement sparkline (dark on mint) -->
+  <polyline points="158,286 214,228 272,256 344,178"
+    fill="none" stroke="#12262A" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="344" cy="178" r="19" fill="#12262A"/>
+</svg>

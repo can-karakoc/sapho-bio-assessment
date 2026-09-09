@@ -82,3 +82,36 @@ COMMENT ON COLUMN events.edit_distance IS 'Levenshtein distance between generate
 -- WHERE action IN ('generated', 'regenerated')
 -- GROUP BY post_id
 -- ORDER BY generation_count DESC;
+
+-- FROM events
+-- WHERE action IN ('generated', 'regenerated')
+-- GROUP BY post_id
+-- ORDER BY generation_count DESC;
+
+-- =============================================================================
+-- Influencer Overrides Table
+-- =============================================================================
+
+-- Create influencer_overrides table
+CREATE TABLE IF NOT EXISTS influencer_overrides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  
+  -- Influencer reference
+  influencer_id TEXT NOT NULL,
+  
+  -- Action type
+  action TEXT NOT NULL CHECK (action IN ('pin', 'mute', 'unmute', 'add', 'dismiss')),
+  
+  -- Timestamp
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_overrides_influencer_id ON influencer_overrides(influencer_id);
+CREATE INDEX IF NOT EXISTS idx_overrides_created_at ON influencer_overrides(created_at DESC);
+
+-- Comments
+COMMENT ON TABLE influencer_overrides IS 'Manual influencer actions: pin, mute, add, dismiss';
+COMMENT ON COLUMN influencer_overrides.influencer_id IS 'Reference to influencer (from influencers.json)';
+COMMENT ON COLUMN influencer_overrides.action IS 'Override action: pin|mute|unmute|add|dismiss';
+COMMENT ON COLUMN influencer_overrides.created_at IS 'When the override was created';

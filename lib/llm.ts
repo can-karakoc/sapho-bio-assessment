@@ -2,6 +2,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import Groq from 'groq-sdk';
 import type { GenerationConfig, GeneratedResponse, Post } from './types';
 
+// Model IDs are env-overridable so a provider-side rename never requires a code change.
+// Using gemini-3.6-flash (recommended by Google for new users)
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'groq/compound';
+
 /**
  * LLM Provider abstraction layer
  *
@@ -54,13 +59,15 @@ class GeminiProvider implements LLMProviderInterface {
     }
 
     try {
-      const model = this.client.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+      const model = this.client.getGenerativeModel({ model: GEMINI_MODEL });
 
       const prompt = this.buildPrompt(post, config, kbContext);
 
+      console.log('[Gemini] Generating with model:', GEMINI_MODEL);
       const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text();
+      console.log('[Gemini] Success! Generated', text.length, 'chars');
 
       const latencyMs = Date.now() - startTime;
 
@@ -69,13 +76,14 @@ class GeminiProvider implements LLMProviderInterface {
 
       return {
         text,
-        model: 'gemini-2.0-flash-exp',
+        model: GEMINI_MODEL,
         latencyMs,
         promptTokens: usage?.promptTokenCount,
         completionTokens: usage?.candidatesTokenCount,
       };
     } catch (error) {
-      console.error('Gemini generation error:', error);
+      console.error('[Gemini] Generation error:', error);
+      console.error('[Gemini] Error details:', JSON.stringify(error, null, 2));
       // Fall back to mock on error
       return this.mockResponse(post, config, startTime);
     }
@@ -87,9 +95,8 @@ class GeminiProvider implements LLMProviderInterface {
     kbContext: string
   ): string {
     const goalDescriptions = {
-      engagement: 'build community and encourage conversation',
-      leadgen: 'identify potential customers and open a sales conversation',
-      'thought-leadership': 'position Sapho Bio as an industry expert',
+      comment: 'build community and encourage conversation through a public comment',
+      dm: 'identify potential customers and open a sales conversation through a direct message',
     };
 
     return `You are writing a LinkedIn comment on behalf of Sapho Bio.
@@ -124,14 +131,13 @@ RESPONSE:`;
     startTime: number
   ): ProviderResponse {
     const mockTexts = {
-      engagement: `Great insights! Environmental monitoring truly is the foundation of quality in sterile compounding. At Sapho Bio, we've seen how a proactive approach to compliance builds long-term operational excellence.`,
-      leadgen: `Congrats on the successful inspection! Building a culture of quality is exactly what sets leaders apart. We'd love to hear more about your environmental monitoring strategy - are you open to connecting?`,
-      'thought-leadership': `This resonates deeply. Compliance isn't just about passing inspections - it's about systematic excellence. Our work with 503B facilities shows that the best teams treat USP 797 as a baseline, not a ceiling.`,
+      comment: `Great insights! Environmental monitoring truly is the foundation of quality in sterile compounding. At Sapho Bio, we've seen how a proactive approach to compliance builds long-term operational excellence.`,
+      dm: `Congrats on the successful inspection! Building a culture of quality is exactly what sets leaders apart. We'd love to hear more about your environmental monitoring strategy - are you open to connecting?`,
     };
 
     return {
       text: `[MOCK RESPONSE - No Gemini API key configured]\n\n${mockTexts[config.goal]}`,
-      model: 'gemini-2.0-flash-exp (mock)',
+      model: `${GEMINI_MODEL} (mock)`,
       latencyMs: Date.now() - startTime,
     };
   }
@@ -168,7 +174,7 @@ class GroqProvider implements LLMProviderInterface {
       const prompt = this.buildPrompt(post, config, kbContext);
 
       const completion = await this.client.chat.completions.create({
-        model: 'llama-3.3-70b-versatile',
+        model: GROQ_MODEL,
         messages: [
           {
             role: 'user',
@@ -184,7 +190,7 @@ class GroqProvider implements LLMProviderInterface {
 
       return {
         text,
-        model: 'llama-3.3-70b-versatile',
+        model: GROQ_MODEL,
         latencyMs,
         promptTokens: completion.usage?.prompt_tokens,
         completionTokens: completion.usage?.completion_tokens,
@@ -202,9 +208,8 @@ class GroqProvider implements LLMProviderInterface {
   ): string {
     // Same prompt structure as Gemini for consistency
     const goalDescriptions = {
-      engagement: 'build community and encourage conversation',
-      leadgen: 'identify potential customers and open a sales conversation',
-      'thought-leadership': 'position Sapho Bio as an industry expert',
+      comment: 'build community and encourage conversation through a public comment',
+      dm: 'identify potential customers and open a sales conversation through a direct message',
     };
 
     return `You are writing a LinkedIn comment on behalf of Sapho Bio.
@@ -239,14 +244,13 @@ RESPONSE:`;
     startTime: number
   ): ProviderResponse {
     const mockTexts = {
-      engagement: `Really appreciate you sharing this! The connection between environmental monitoring and culture is spot-on. At Sapho Bio, we see the same pattern with leading 503B facilities.`,
-      leadgen: `Impressive results! Quality culture starts at the top. If you're ever interested in discussing how other facilities are approaching environmental monitoring at scale, let's connect.`,
-      'thought-leadership': `Well said. Our research across 503B facilities confirms this - sustainable compliance comes from treating quality as a continuous improvement process, not a checkbox exercise.`,
+      comment: `Really appreciate you sharing this! The connection between environmental monitoring and culture is spot-on. At Sapho Bio, we see the same pattern with leading 503B facilities.`,
+      dm: `Impressive results! Quality culture starts at the top. If you're ever interested in discussing how other facilities are approaching environmental monitoring at scale, let's connect.`,
     };
 
     return {
       text: `[MOCK RESPONSE - No Groq API key configured]\n\n${mockTexts[config.goal]}`,
-      model: 'llama-3.3-70b-versatile (mock)',
+      model: `${GROQ_MODEL} (mock)`,
       latencyMs: Date.now() - startTime,
     };
   }
@@ -288,7 +292,7 @@ export async function generateResponse(params: {
   const needsReview =
     result.text.includes('[MOCK') ||
     result.text.includes('TODO') ||
-    config.goal === 'leadgen' || // Always review lead-gen responses
+    config.goal === 'dm' || // Always review DM responses
     result.text.length < 50; // Suspiciously short
 
   return {
@@ -297,6 +301,7 @@ export async function generateResponse(params: {
     latencyMs: result.latencyMs,
     usedSources: sources,
     needsReview,
+    variantId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // unique variant ID
     provider: providerName,
   };
 }
@@ -306,4 +311,201 @@ export async function generateResponse(params: {
  */
 export function getCurrentProvider(): string {
   return process.env.LLM_PROVIDER || 'gemini';
+}
+
+/**
+ * Stream tokens from LLM generation
+ * Yields chunks of type 'token' or 'metadata'
+ */
+export async function* streamGenerateResponse(params: {
+  post: Post;
+  config: GenerationConfig;
+  kbContext: string;
+  sources: string[];
+}): AsyncGenerator<
+  | { type: 'token'; text: string }
+  | {
+      type: 'metadata';
+      data: {
+        model: string;
+        latencyMs: number;
+        usedSources: string[];
+        needsReview: boolean;
+        variantId: string;
+        provider: string;
+        fullText: string;
+      };
+    }
+> {
+  const { post, config, kbContext, sources } = params;
+  const providerName = (process.env.LLM_PROVIDER || 'gemini').toLowerCase();
+  const startTime = Date.now();
+
+  let fullText = '';
+
+  try {
+    if (providerName === 'groq') {
+      // Groq streaming
+      const apiKey = process.env.GROQ_API_KEY;
+      if (apiKey) {
+        const groq = new Groq({ apiKey });
+        // Build prompt using same logic as GroqProvider
+        const goalDescriptions = {
+          comment: 'build community and encourage conversation through a public comment',
+          dm: 'identify potential customers and open a sales conversation through a direct message',
+        };
+        const prompt = `You are writing a LinkedIn comment on behalf of Sapho Bio.
+
+CONTEXT & KNOWLEDGE BASE:
+${kbContext}
+
+ORIGINAL POST:
+"${post.text}"
+
+GOAL: ${goalDescriptions[config.goal]}
+
+BRAND VOICE: ${config.brandVoice}
+
+ADDITIONAL INSTRUCTIONS: ${config.instructions || 'None'}
+
+Write a professional, engaging LinkedIn comment that:
+1. Acknowledges the original post thoughtfully
+2. Adds genuine value (insight, question, or resource)
+3. Reflects Sapho Bio's brand voice
+4. Is grounded in the knowledge base provided
+5. Achieves the specified goal without being overly salesy
+
+Keep it concise (2-4 sentences typically work best on LinkedIn).
+
+RESPONSE:`;
+
+        const stream = await groq.chat.completions.create({
+          model: GROQ_MODEL,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7,
+          max_tokens: 300,
+          stream: true,
+        });
+
+        for await (const chunk of stream) {
+          const content = chunk.choices[0]?.delta?.content;
+          if (content) {
+            fullText += content;
+            yield { type: 'token', text: content };
+          }
+        }
+      } else {
+        // Mock streaming for Groq
+        const mockText = `[MOCK RESPONSE - No Groq API key configured]\n\nReally appreciate you sharing this! The connection between environmental monitoring and culture is spot-on. At Sapho Bio, we see the same pattern with leading 503B facilities.`;
+        for (const char of mockText) {
+          fullText += char;
+          yield { type: 'token', text: char };
+          await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate streaming
+        }
+      }
+    } else {
+      // Gemini streaming (default)
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (apiKey) {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+        // Build prompt using same logic as GeminiProvider
+        const goalDescriptions = {
+          comment: 'build community and encourage conversation through a public comment',
+          dm: 'identify potential customers and open a sales conversation through a direct message',
+        };
+        const prompt = `You are writing a LinkedIn comment on behalf of Sapho Bio.
+
+CONTEXT & KNOWLEDGE BASE:
+${kbContext}
+
+ORIGINAL POST:
+"${post.text}"
+
+GOAL: ${goalDescriptions[config.goal]}
+
+BRAND VOICE: ${config.brandVoice}
+
+ADDITIONAL INSTRUCTIONS: ${config.instructions || 'None'}
+
+Write a professional, engaging LinkedIn comment that:
+1. Acknowledges the original post thoughtfully
+2. Adds genuine value (insight, question, or resource)
+3. Reflects Sapho Bio's brand voice
+4. Is grounded in the knowledge base provided
+5. Achieves the specified goal without being overly salesy
+
+Keep it concise (2-4 sentences typically work best on LinkedIn).
+
+RESPONSE:`;
+
+        const result = await model.generateContentStream(prompt);
+
+        for await (const chunk of result.stream) {
+          const chunkText = chunk.text();
+          if (chunkText) {
+            fullText += chunkText;
+            yield { type: 'token', text: chunkText };
+          }
+        }
+      } else {
+        // Mock streaming for Gemini
+        const mockText = `[MOCK RESPONSE - No Gemini API key configured]\n\nGreat insights! Environmental monitoring truly is the foundation of quality in sterile compounding. At Sapho Bio, we've seen how a proactive approach to compliance builds long-term operational excellence.`;
+        for (const char of mockText) {
+          fullText += char;
+          yield { type: 'token', text: char };
+          await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate streaming
+        }
+      }
+    }
+  } catch (error: unknown) {
+    console.error('[Streaming] Error:', error);
+    const err = error as Error;
+    console.error('[Streaming] Error message:', err.message);
+
+    // Try to extract a helpful error message
+    let errorMessage = 'Generation failed';
+    if (err.message?.includes('503') || err.message?.includes('high demand')) {
+      errorMessage = 'Model is busy, retrying with fallback...';
+    } else if (err.message?.includes('404')) {
+      errorMessage = 'Model not found';
+    } else if (err.message) {
+      errorMessage = err.message;
+    }
+
+    // Fallback to non-streaming
+    console.log('[Streaming] Falling back to non-streaming mode...');
+    try {
+      const provider = getProvider();
+      const result = await provider.generateResponse(post, config, kbContext, sources);
+      fullText = result.text;
+      yield { type: 'token', text: result.text };
+    } catch (fallbackError: unknown) {
+      const fallbackErr = fallbackError as Error;
+      console.error('[Fallback] Also failed:', fallbackErr.message);
+      // Return error as text
+      yield { type: 'token', text: `[Error: ${errorMessage}]\n\nPlease try again or use a different model.` };
+      fullText = `Error: ${errorMessage}`;
+    }
+  }
+
+  const latencyMs = Date.now() - startTime;
+  const needsReview =
+    fullText.includes('[MOCK') ||
+    fullText.includes('TODO') ||
+    config.goal === 'dm' ||
+    fullText.length < 50;
+
+  yield {
+    type: 'metadata',
+    data: {
+      model: providerName === 'groq' ? GROQ_MODEL : GEMINI_MODEL,
+      latencyMs,
+      usedSources: sources,
+      needsReview,
+      variantId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      provider: providerName,
+      fullText,
+    },
+  };
 }

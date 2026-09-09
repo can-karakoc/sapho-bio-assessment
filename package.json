@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "refresh": "tsx scripts/refresh.ts",
-    "discover": "tsx scripts/discover.ts"
+    "discover": "tsx scripts/discover.ts",
+    "enrich": "tsx scripts/enrich-profiles.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -23,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv": "^17.4.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",

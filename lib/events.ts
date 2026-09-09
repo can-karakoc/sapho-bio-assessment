@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
+import path from 'path';
 import type { Event } from './types';
 
 /**
@@ -46,6 +48,24 @@ export async function logEvent(event: Event): Promise<void> {
   // Console fallback if no Supabase
   if (!client) {
     console.log('[EVENT]', JSON.stringify(eventWithTimestamp, null, 2));
+
+    // Also append to local .jsonl file (gitignored) for persistence
+    try {
+      const localDir = path.join(process.cwd(), '.local');
+      const localFile = path.join(localDir, 'events.jsonl');
+
+      // Ensure directory exists
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+
+      // Append as newline-delimited JSON
+      fs.appendFileSync(localFile, JSON.stringify(eventWithTimestamp) + '\n');
+    } catch (err) {
+      // Silent fail - local logging is best-effort
+      console.warn('Failed to write local event log:', err);
+    }
+
     return;
   }
 

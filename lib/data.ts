@@ -12,7 +12,28 @@ export function loadInfluencers(): Influencer[] {
   try {
     const filePath = path.join(DATA_DIR, 'influencers.json');
     const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
+    const influencers = JSON.parse(data);
+
+    // Compatibility: map old structure to new contract
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return influencers.map((inf: any) => {
+      // Handle old 'title' -> new 'role'
+      const role = inf.role || inf.title;
+
+      // Handle old 'followerCount' -> new 'signals.followers'
+      const followers = inf.signals?.followers ?? inf.followerCount ?? inf.followers;
+
+      return {
+        ...inf,
+        role,
+        // Populate top-level convenience fields from signals if available
+        followers: followers,
+        postsPerMonth: inf.signals?.postsPerMonth ?? inf.postsPerMonth,
+        avgEngagement: inf.signals?.avgEngagement ?? inf.avgEngagement,
+        relevance: inf.signals?.relevance ?? inf.relevance,
+        recentEngagement: inf.signals?.recentEngagement ?? inf.recentEngagement,
+      };
+    });
   } catch (error) {
     console.error('Failed to load influencers:', error);
     return [];

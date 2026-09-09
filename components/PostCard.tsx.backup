@@ -1,0 +1,555 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Avatar } from "./Avatar";
+import { StatusChip } from "./StatusChip";
+import { formatRelativeDate } from "@/lib/format";
+import { useSessionActivity } from "@/lib/context/SessionActivityContext";
+import type { Post, Influencer, GeneratedResponse } from "@/lib/types";
+
+type BrandVoice = "peer-expert" | "warm" | "concise";
+
+interface PostCardProps {
+  post: Post;
+  influencer: Influencer;
+  showInfluencer?: boolean;
+}
+
+export function PostCard({
+  post,
+  influencer,
+  showInfluencer: _showInfluencer = false,
+}: PostCardProps) {
+  const { addActivity } = useSessionActivity();
+  const [goal, setGoal] = useState<"comment" | "dm">("comment");
+  const [brandVoice, setBrandVoice] = useState<BrandVoice>("peer-expert");
+  const [isEditing, setIsEditing] = useState(false);
+  const [postExpanded, setPostExpanded] = useState(false);
+
+  // Ephemeral state - NEVER persisted to files
+  const [localStatus, setLocalStatus] = useState<
+    "new" | "drafted" | "posted" | "skipped" | undefined
+  >(post.status);
+  const [draft, setDraft] = useState<GeneratedResponse | null>(null);
+  const [draftText, setDraftText] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Load persisted draft state from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("saphoEngage.v1.drafts");
+      if (stored) {
+        const drafts = JSON.parse(stored);
+        const postDraft = drafts[post.id];
+        if (postDraft) {
+          if (postDraft.goal) setGoal(postDraft.goal);
+          if (postDraft.voice) setBrandVoice(postDraft.voice);
+          if (postDraft.text) setDraftText(postDraft.text);
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to load draft from localStorage:", err);
+    }
+  }, [post.id]);
+
+  // Persist draft state to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("saphoEngage.v1.drafts");
+      const drafts = stored ? JSON.parse(stored) : {};
+
+      drafts[post.id] = {
+        goal,
+        voice: brandVoice,
+        text: draftText,
+      };
+
+      localStorage.setItem("saphoEngage.v1.drafts", JSON.stringify(drafts));
+    } catch (err) {
+      console.warn("Failed to save draft to localStorage:", err);
+    }
+  }, [post.id, goal, brandVoice, draftText]);
+
+  const dmDisabled = post.flags?.complianceNegative ?? false;
+  const activeGoal = goal === "dm" && dmDisabled ? "comment" : goal;
+  const isDone = localStatus === "posted" || localStatus === "skipped";
+
+  // Check if post is long enough to need expansion
+  const postNeedsExpansion = post.text.length > 280;
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          config: {
+            goal: activeGoal,
+            brandVoice,
+            instructions: "",
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Generation failed");
+      }
+
+      const result: GeneratedResponse = await response.json();
+      setDraft(result);
+      setDraftText(result.text);
+      setLocalStatus("drafted");
+
+      // Record in session activity
+      addActivity({
+        id: `${post.id}-${Date.now()}`,
+        postId: post.id,
+        influencerId: influencer.id,
+        influencerName: influencer.name,
+        postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
+        goal: activeGoal,
+        model: result.model,
+        text: result.text,
+        action: "generated",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Generation failed");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRegenerate = async () => {
+    // Same as generate, just different event action
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          config: {
+            goal: activeGoal,
+            brandVoice,
+            instructions: "",
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Regeneration failed");
+      }
+
+      const result: GeneratedResponse = await response.json();
+      setDraft(result);
+      setDraftText(result.text);
+
+      // Log regenerate event
+      await fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          action: "regenerated",
+        }),
+      });
+
+      // Record in session activity
+      addActivity({
+        id: `${post.id}-${Date.now()}`,
+        postId: post.id,
+        influencerId: influencer.id,
+        influencerName: influencer.name,
+        postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
+        goal: activeGoal,
+        model: result.model,
+        text: result.text,
+        action: "regenerated",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Regeneration failed");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(draftText);
+
+      // Log copy event
+      await fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          action: "copied",
+        }),
+      });
+
+      // Record in session activity
+      if (draft) {
+        addActivity({
+          id: `${post.id}-${Date.now()}`,
+          postId: post.id,
+          influencerId: influencer.id,
+          influencerName: influencer.name,
+          postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
+          goal: activeGoal,
+          model: draft.model,
+          text: draftText,
+          action: "copied",
+          createdAt: new Date().toISOString(),
+        });
+      }
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
+
+  const handlePost = async () => {
+    // Set local status to posted
+    setLocalStatus("posted");
+
+    // Open LinkedIn post in new tab
+    window.open(post.url, "_blank");
+
+    // Log posted event
+    try {
+      await fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          action: "posted",
+        }),
+      });
+
+      // Record in session activity
+      if (draft) {
+        addActivity({
+          id: `${post.id}-${Date.now()}`,
+          postId: post.id,
+          influencerId: influencer.id,
+          influencerName: influencer.name,
+          postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
+          goal: activeGoal,
+          model: draft.model,
+          text: draftText,
+          action: "posted",
+          createdAt: new Date().toISOString(),
+        });
+      }
+    } catch (err) {
+      console.error("Event logging failed:", err);
+    }
+  };
+
+  const handleSkip = async () => {
+    // Set local status to skipped
+    setLocalStatus("skipped");
+
+    // Log skip event
+    try {
+      await fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          action: "skipped",
+        }),
+      });
+
+      // Record in session activity
+      addActivity({
+        id: `${post.id}-${Date.now()}`,
+        postId: post.id,
+        influencerId: influencer.id,
+        influencerName: influencer.name,
+        postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
+        goal: activeGoal,
+        model: draft?.model || "N/A",
+        text: draftText || "",
+        action: "skipped",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error("Event logging failed:", err);
+    }
+  };
+
+  return (
+    <div
+      className={`bg-surface border border-line rounded-lg shadow-sm overflow-hidden ${
+        isDone ? "opacity-60" : ""
+      }`}
+    >
+      {/* Attribution */}
+      <div className="flex items-center gap-3 px-5 pt-5">
+        <Avatar
+          name={influencer.name}
+          avatarUrl={influencer.avatarUrl}
+          size="sm"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-sans font-semibold text-sm text-ink tracking-tight">
+            {influencer.name}
+          </div>
+          <div className="font-sans text-[11px] text-muted uppercase tracking-tight mt-0.5">
+            {influencer.company} · {formatRelativeDate(post.postedAt)} · 👍{" "}
+            {post.reactions} 💬 {post.comments}
+          </div>
+        </div>
+        <StatusChip
+          status={
+            (localStatus || "new") as "new" | "drafted" | "posted" | "skipped"
+          }
+        />
+      </div>
+
+      {/* Post text - READING FONT with expandable */}
+      <div className="px-5 py-4">
+        <div
+          className={`font-reading text-[15px] text-ink leading-relaxed whitespace-pre-wrap relative ${
+            !postExpanded && postNeedsExpansion ? "line-clamp-4" : ""
+          }`}
+        >
+          {post.text}
+          {/* Subtle fade when collapsed */}
+          {!postExpanded && postNeedsExpansion && (
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-surface to-transparent pointer-events-none" />
+          )}
+        </div>
+        {/* Expand/collapse toggle - only show for long posts */}
+        {postNeedsExpansion && (
+          <button
+            onClick={() => setPostExpanded(!postExpanded)}
+            className="font-sans text-[11px] text-muted uppercase tracking-tight mt-2 hover:text-ink transition-colors"
+          >
+            {postExpanded ? "Show less" : "Show full post"}
+          </button>
+        )}
+      </div>
+
+      {/* Draft section */}
+      <div className="bg-bg border-t border-line px-5 py-4">
+        {/* Error message */}
+        {error && (
+          <div className="mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-sm">
+            <p className="font-sans text-xs text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Draft content or generation prompt */}
+        {draft || draftText || isEditing ? (
+          <>
+            {/* Existing draft */}
+            {isEditing ? (
+              <textarea
+                value={draftText}
+                onChange={(e) => setDraftText(e.target.value)}
+                className="w-full font-reading text-[15px] leading-relaxed text-ink bg-surface border border-highlight-teal rounded-sm px-3 py-2.5 resize-vertical min-h-[100px]"
+                placeholder="Edit draft..."
+              />
+            ) : (
+              <div className="font-reading text-[15px] leading-relaxed text-ink py-1">
+                {activeGoal === "dm" && dmDisabled ? (
+                  <span className="text-muted">
+                    DM disabled for compliance posts
+                  </span>
+                ) : (
+                  draftText || (
+                    <span className="text-muted italic">No draft yet</span>
+                  )
+                )}
+              </div>
+            )}
+
+            {/* Grounding chips + needs-review badge */}
+            {draft && (
+              <div className="flex items-center gap-2 flex-wrap mt-3">
+                {/* Voice chip */}
+                <span className="font-sans text-[10px] text-muted bg-surface border border-line rounded-sm px-1.5 py-0.5 uppercase tracking-tight">
+                  Voice: {brandVoice}
+                </span>
+
+                {/* Sources chips */}
+                {draft.usedSources.map((source, idx) => (
+                  <span
+                    key={idx}
+                    className="font-sans text-[10px] text-muted bg-surface border border-line rounded-sm px-1.5 py-0.5 uppercase tracking-tight"
+                  >
+                    📄 {source}
+                  </span>
+                ))}
+
+                {/* Needs review badge */}
+                {draft.needsReview && (
+                  <span className="font-sans text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-sm px-1.5 py-0.5 uppercase tracking-tight font-semibold">
+                    ⚠️ Review
+                  </span>
+                )}
+
+                {/* Model info */}
+                <span className="font-sans text-[10px] text-muted bg-surface border border-line rounded-sm px-1.5 py-0.5 uppercase tracking-tight ml-auto">
+                  {draft.model} · {draft.latencyMs}ms
+                </span>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 flex-wrap mt-4">
+              <button
+                onClick={handleRegenerate}
+                disabled={isGenerating}
+                className="font-sans border border-line bg-surface text-ink text-xs font-medium px-3 py-2 rounded-sm hover:border-highlight-teal transition-all uppercase tracking-tight disabled:opacity-50"
+              >
+                {isGenerating ? "..." : "↻ Regen"}
+              </button>
+              <button
+                onClick={handleEdit}
+                className="font-sans border border-line bg-surface text-ink text-xs font-medium px-3 py-2 rounded-sm hover:border-highlight-teal transition-all uppercase tracking-tight"
+              >
+                {isEditing ? "✓ Done" : "✎ Edit"}
+              </button>
+              <button
+                onClick={handleCopy}
+                className="font-sans border border-line bg-surface text-ink text-xs font-medium px-3 py-2 rounded-sm hover:border-highlight-teal transition-all uppercase tracking-tight"
+              >
+                ⧉ Copy
+              </button>
+              <button
+                onClick={handlePost}
+                className="font-sans border border-highlight-teal bg-highlight-teal text-surface text-xs font-semibold px-3 py-2 rounded-sm hover:bg-highlight-teal/90 transition-all uppercase tracking-tight"
+              >
+                {activeGoal === "comment" ? "Post ↗" : "Send ↗"}
+              </button>
+              <button
+                onClick={handleSkip}
+                className="font-sans border-transparent text-muted text-xs font-medium px-3 py-2 rounded-sm ml-auto hover:text-ink transition-all uppercase tracking-tight"
+              >
+                Skip
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Compact generation control row */}
+            <div className="py-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                {/* Left: Response type + Voice selectors */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {/* Response type */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-sans text-[11px] text-muted uppercase tracking-tight">
+                      Response type
+                    </span>
+                    <div className="inline-flex bg-surface border border-line rounded-sm p-[2px]">
+                      <button
+                        onClick={() => setGoal("comment")}
+                        className={`font-sans text-xs px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
+                          activeGoal === "comment"
+                            ? "bg-highlight-teal text-surface font-semibold"
+                            : "text-ink hover:text-highlight-teal"
+                        }`}
+                        title="Engagement"
+                      >
+                        💬 Comment
+                      </button>
+                      <button
+                        onClick={() => !dmDisabled && setGoal("dm")}
+                        disabled={dmDisabled}
+                        className={`font-sans text-xs px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
+                          dmDisabled
+                            ? "text-muted/40 cursor-not-allowed"
+                            : activeGoal === "dm"
+                            ? "bg-highlight-teal text-surface font-semibold"
+                            : "text-ink hover:text-highlight-teal"
+                        }`}
+                        title={dmDisabled ? "Disabled for compliance posts" : "Lead-gen"}
+                      >
+                        ✉️ DM
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Voice */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-sans text-[11px] text-muted uppercase tracking-tight">
+                      Voice
+                    </span>
+                    <div className="inline-flex bg-surface border border-line rounded-sm p-[2px]">
+                      <button
+                        onClick={() => setBrandVoice("peer-expert")}
+                        className={`font-sans text-xs px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
+                          brandVoice === "peer-expert"
+                            ? "bg-highlight-teal text-surface font-semibold"
+                            : "text-ink hover:text-highlight-teal"
+                        }`}
+                      >
+                        Peer Expert
+                      </button>
+                      <button
+                        onClick={() => setBrandVoice("warm")}
+                        className={`font-sans text-xs px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
+                          brandVoice === "warm"
+                            ? "bg-highlight-teal text-surface font-semibold"
+                            : "text-ink hover:text-highlight-teal"
+                        }`}
+                      >
+                        Warm
+                      </button>
+                      <button
+                        onClick={() => setBrandVoice("concise")}
+                        className={`font-sans text-xs px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
+                          brandVoice === "concise"
+                            ? "bg-highlight-teal text-surface font-semibold"
+                            : "text-ink hover:text-highlight-teal"
+                        }`}
+                      >
+                        Concise
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* DM disabled note (inline) */}
+                  {dmDisabled && (
+                    <span className="font-sans text-[10px] text-muted italic">
+                      DM disabled on compliance posts
+                    </span>
+                  )}
+                </div>
+
+                {/* Right: Primary CTA */}
+                <button
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
+                  className="font-sans border border-highlight-teal bg-highlight-teal text-surface text-xs font-semibold px-4 py-2 rounded-sm hover:bg-highlight-teal/90 transition-all uppercase tracking-tight disabled:opacity-50"
+                >
+                  {isGenerating ? "Generating..." : "Generate Response"}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,552 @@
+<title>Sapho Engage Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#eaf0f0; --surface:#ffffff; --surface-2:#f5f8f8; --surface-3:#eef3f3;
+    --ink:#16242a; --muted:#5c6d70; --faint:#8b9a9c;
+    --line:#dbe4e3; --line-strong:#c5d2d1;
+    --accent:#0e7c86; --accent-2:#0aa3a6; --accent-soft:#d7ecec; --accent-ink:#0b5a62;
+    --warn-fg:#8a5712; --warn-bg:#f6e7cd; --warn-line:#e3cd9f;
+    --good-fg:#1f7a4d; --good-bg:#d6efdf; --good-line:#a9d9bd;
+    --new-fg:#0c6771; --new-bg:#d7ecec; --new-line:#a9d5d6;
+    --skip-fg:#6a6f77; --skip-bg:#e9edee; --skip-line:#d3dadb;
+    --track:#e2eae9; --barlo:#bcd6d6;
+    --shadow:0 1px 2px rgba(20,40,45,.05),0 10px 30px rgba(20,40,45,.07);
+    --shadow-sm:0 1px 2px rgba(20,40,45,.06);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#0c1412; --surface:#141f1d; --surface-2:#182825; --surface-3:#1d2f2c;
+    --ink:#e9efed; --muted:#93a5a3; --faint:#6f8180;
+    --line:#243634; --line-strong:#324846;
+    --accent:#37c3ca; --accent-2:#57dade; --accent-soft:#123234; --accent-ink:#9fe6ea;
+    --warn-fg:#e8bb66; --warn-bg:#332810; --warn-line:#544220;
+    --good-fg:#5cc88a; --good-bg:#12301f; --good-line:#1f4a31;
+    --new-fg:#74dbe1; --new-bg:#0f2f31; --new-line:#1d4a4d;
+    --skip-fg:#9aa6a6; --skip-bg:#1c2624; --skip-line:#2c3a38;
+    --track:#20302d; --barlo:#2c4a49;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --ground:#0c1412; --surface:#141f1d; --surface-2:#182825; --surface-3:#1d2f2c;
+    --ink:#e9efed; --muted:#93a5a3; --faint:#6f8180;
+    --line:#243634; --line-strong:#324846;
+    --accent:#37c3ca; --accent-2:#57dade; --accent-soft:#123234; --accent-ink:#9fe6ea;
+    --warn-fg:#e8bb66; --warn-bg:#332810; --warn-line:#544220;
+    --good-fg:#5cc88a; --good-bg:#12301f; --good-line:#1f4a31;
+    --new-fg:#74dbe1; --new-bg:#0f2f31; --new-line:#1d4a4d;
+    --skip-fg:#9aa6a6; --skip-bg:#1c2624; --skip-line:#2c3a38;
+    --track:#20302d; --barlo:#2c4a49;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif; line-height:1.5;
+    -webkit-font-smoothing:antialiased;}
+  .mono{font-family:"IBM Plex Mono",monospace;}
+  button{font-family:inherit; cursor:pointer;}
+  button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+
+  /* ---- app shell ---- */
+  header.top{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--surface) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .topin{max-width:1080px; margin:0 auto; padding:12px clamp(14px,3vw,26px); display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .brand{display:flex; align-items:baseline; gap:8px; margin-right:auto;}
+  .brand .logo{font-family:"Fraunces",serif; font-weight:600; font-size:21px; letter-spacing:-.01em;}
+  .brand .logo b{color:var(--accent);}
+  .brand .tag{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+  .seg{display:inline-flex; background:var(--surface-3); border:1px solid var(--line); border-radius:9px; padding:3px;}
+  .seg button{border:none; background:none; color:var(--muted); font-size:13px; font-weight:500; padding:6px 12px; border-radius:6px; transition:.15s;}
+  .seg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm);}
+  .gctl{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted);}
+  .gctl select{font-family:inherit; font-size:12.5px; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:7px; padding:5px 8px;}
+  .hint{font-size:12px; color:var(--faint); border-left:2px solid var(--accent); padding-left:8px; margin-left:2px;}
+
+  .subtabs{max-width:1080px; margin:0 auto; padding:0 clamp(14px,3vw,26px); display:flex; gap:2px;}
+  .subtabs button{border:none; background:none; color:var(--muted); font-size:13.5px; font-weight:500; padding:11px 14px; border-bottom:2px solid transparent; transition:.15s;}
+  .subtabs button[aria-pressed="true"]{color:var(--accent); border-bottom-color:var(--accent);}
+  .subtabs .qbadge{font-family:"IBM Plex Mono",monospace; font-size:11px; background:var(--accent-soft); color:var(--accent-ink); border-radius:999px; padding:1px 7px; margin-left:6px;}
+
+  main{max-width:1080px; margin:0 auto; padding:clamp(16px,3vw,26px) clamp(14px,3vw,26px) 90px;}
+  .vhead{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .vtitle{font-family:"Fraunces",serif; font-weight:600; font-size:clamp(20px,3.4vw,26px); margin:0; letter-spacing:-.01em;}
+  .vsub{font-size:13px; color:var(--muted); margin:3px 0 0;}
+  .rowbtns{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); font-size:12.5px; font-weight:500; padding:7px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; transition:.15s;}
+  .btn:hover{border-color:var(--accent); color:var(--accent);}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .btn.primary:hover{filter:brightness(1.06); color:#fff;}
+  .btn.ghost{border-color:transparent; color:var(--muted); padding:7px 9px;}
+  .btn.ghost:hover{background:var(--surface-3); color:var(--ink);}
+
+  /* ---- leaderboard ---- */
+  ul.board{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
+  li.inf{background:var(--surface); border:1px solid var(--line); border-radius:13px; box-shadow:var(--shadow-sm);
+    display:grid; grid-template-columns:34px 40px 1fr auto; gap:14px; align-items:center; padding:13px 16px; transition:.15s; cursor:pointer;}
+  li.inf:hover{border-color:var(--line-strong); box-shadow:var(--shadow); transform:translateY(-1px);}
+  li.inf.pinned{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset, var(--shadow-sm);}
+  .rank{font-family:"Fraunces",serif; font-size:20px; color:var(--muted); text-align:center; font-variant-numeric:tabular-nums;}
+  li.pinned .rank::after{content:"\1F4CC"; display:block; font-size:11px; margin-top:1px;}
+  .av{width:40px; height:40px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:600; font-size:14px; font-family:"IBM Plex Mono",monospace;}
+  .who .nm{font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .who .rl{font-size:12.5px; color:var(--muted); margin-top:1px;}
+  .who .stat{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--faint); margin-top:5px; display:flex; gap:12px; flex-wrap:wrap;}
+  .badge-new{font-family:"IBM Plex Mono",monospace; font-size:10.5px; background:var(--new-bg); color:var(--new-fg); border:1px solid var(--new-line); border-radius:999px; padding:1px 7px;}
+  .right{display:flex; align-items:center; gap:16px;}
+  .spark{width:74px; height:30px; display:block;}
+  .score{text-align:right; min-width:74px;}
+  .score .num{font-family:"Fraunces",serif; font-size:24px; font-variant-numeric:tabular-nums; line-height:1;}
+  .score .lab{font-family:"IBM Plex Mono",monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint);}
+  .scorebar{height:5px; width:74px; background:var(--track); border-radius:999px; overflow:hidden; margin-top:5px;}
+  .scorebar>span{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); border-radius:999px;}
+  .infacts{display:flex; gap:4px;}
+  .iconbtn{border:1px solid var(--line); background:var(--surface-2); color:var(--muted); width:30px; height:30px; border-radius:8px; display:grid; place-items:center; font-size:13px; transition:.15s;}
+  .iconbtn:hover{border-color:var(--accent); color:var(--accent);}
+  .iconbtn[aria-pressed="true"]{background:var(--accent-soft); color:var(--accent-ink); border-color:var(--accent);}
+
+  .candidate{background:repeating-linear-gradient(-45deg,var(--surface-2),var(--surface-2) 10px,var(--surface-3) 10px,var(--surface-3) 20px);
+    border:1px dashed var(--line-strong); border-radius:13px; padding:13px 16px; display:grid; grid-template-columns:34px 40px 1fr auto; gap:14px; align-items:center; margin-top:2px;}
+  .candidate .rank{font-size:13px;}
+  .candidate .tagline{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent-ink); margin-top:4px;}
+  .mutedbar{margin-top:12px; font-size:12.5px; color:var(--muted); text-align:center;}
+  .mutedbar button{background:none; border:none; color:var(--accent); font-size:12.5px; text-decoration:underline; text-underline-offset:2px;}
+
+  /* ---- workspace header ---- */
+  .wshead{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-sm); padding:18px 20px; margin-bottom:16px;}
+  .wstop{display:flex; gap:15px; align-items:center; flex-wrap:wrap;}
+  .wstop .av{width:52px; height:52px; font-size:17px;}
+  .wsname{font-family:"Fraunces",serif; font-weight:600; font-size:22px; line-height:1.1;}
+  .wsrole{font-size:13px; color:var(--muted); margin-top:2px;}
+  .wslink{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent); margin-top:4px; display:inline-block;}
+  .wsscore{margin-left:auto; text-align:right;}
+  .wsscore .num{font-family:"Fraunces",serif; font-size:34px; line-height:1; font-variant-numeric:tabular-nums;}
+  .breakdown{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:16px; padding-top:15px; border-top:1px solid var(--line);}
+  .metric .mlab{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .metric .mval{font-family:"IBM Plex Mono",monospace; font-size:13px; margin-top:2px; font-variant-numeric:tabular-nums;}
+  .metric .mbar{height:4px; background:var(--track); border-radius:999px; overflow:hidden; margin-top:5px;}
+  .metric .mbar>span{display:block; height:100%; background:var(--accent); border-radius:999px;}
+
+  .windowctl{display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
+  .windowctl .lab{font-size:12.5px; color:var(--muted);}
+
+  /* ---- post card ---- */
+  .cards{display:flex; flex-direction:column; gap:14px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-sm); overflow:hidden;}
+  .card.done{opacity:.62;}
+  .cattr{display:flex; align-items:center; gap:10px; padding:13px 16px 0;}
+  .cattr .av{width:32px; height:32px; font-size:12px;}
+  .cattr .nm{font-weight:600; font-size:13.5px;}
+  .cattr .meta{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--faint);}
+  .chip{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.03em; padding:2px 9px; border-radius:999px; border:1px solid transparent; white-space:nowrap; margin-left:auto;}
+  .chip.New{color:var(--new-fg); background:var(--new-bg); border-color:var(--new-line);}
+  .chip.Drafted{color:var(--warn-fg); background:var(--warn-bg); border-color:var(--warn-line);}
+  .chip.Posted{color:var(--good-fg); background:var(--good-bg); border-color:var(--good-line);}
+  .chip.Skipped{color:var(--skip-fg); background:var(--skip-bg); border-color:var(--skip-line);}
+  .ptext{padding:10px 16px 4px; font-size:14.5px;}
+  .pmeta{padding:0 16px 13px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--faint); display:flex; gap:14px;}
+
+  .draft{background:var(--surface-2); border-top:1px solid var(--line); padding:13px 16px;}
+  .drafthead{display:flex; align-items:center; gap:10px; margin-bottom:9px; flex-wrap:wrap;}
+  .draftlabel{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px;}
+  .draftlabel b{color:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:500;}
+  .miniseg{display:inline-flex; background:var(--surface-3); border:1px solid var(--line); border-radius:8px; padding:2px;}
+  .miniseg button{border:none; background:none; color:var(--muted); font-size:11.5px; padding:4px 9px; border-radius:6px; display:flex; align-items:center; gap:5px;}
+  .miniseg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm);}
+  .drafttext{font-size:14px; line-height:1.55; padding:2px 0 4px;}
+  textarea.editor{width:100%; font-family:inherit; font-size:14px; line-height:1.55; color:var(--ink); background:var(--surface); border:1px solid var(--accent); border-radius:8px; padding:9px 11px; resize:vertical; min-height:82px;}
+  .grounded{display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-top:8px;}
+  .gtag{font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--muted); background:var(--surface-3); border:1px solid var(--line); border-radius:6px; padding:1px 6px;}
+  .review{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--warn-fg); background:var(--warn-bg); border:1px solid var(--warn-line); border-radius:6px; padding:1px 7px;}
+  .actions{display:flex; gap:7px; flex-wrap:wrap; margin-top:12px;}
+  .act{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); font-size:12px; font-weight:500; padding:6px 11px; border-radius:8px; display:inline-flex; align-items:center; gap:5px; transition:.15s;}
+  .act:hover{border-color:var(--accent); color:var(--accent);}
+  .act.post{background:var(--accent); border-color:var(--accent); color:#fff;} .act.post:hover{filter:brightness(1.07); color:#fff;}
+  .act.skip{margin-left:auto; color:var(--muted);}
+
+  .empty{text-align:center; color:var(--muted); padding:48px 20px; font-size:14px; background:var(--surface); border:1px dashed var(--line-strong); border-radius:14px;}
+
+  /* toast */
+  #toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:var(--ink); color:var(--ground); font-size:13px; padding:10px 16px; border-radius:10px; box-shadow:var(--shadow); z-index:50; transition:.22s; pointer-events:none; max-width:90vw;}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:720px){
+    li.inf{grid-template-columns:26px 36px 1fr; }
+    li.inf .right{grid-column:1/-1; just-content:space-between; padding-top:6px; border-top:1px solid var(--line); margin-top:4px;}
+    .candidate{grid-template-columns:26px 36px 1fr;}
+    .breakdown{grid-template-columns:repeat(2,1fr);}
+    .spark{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+
+<header class="top">
+  <div class="topin">
+    <div class="brand"><span class="logo">Sapho <b>Engage</b></span><span class="tag">mockup</span></div>
+    <div class="seg" id="modeSeg" role="group" aria-label="Layout direction">
+      <button data-act="mode" data-mode="influencer" aria-pressed="true">Influencer-first</button>
+      <button data-act="mode" data-mode="hybrid" aria-pressed="false">Hybrid</button>
+    </div>
+    <div class="gctl">
+      <span>Default goal</span>
+      <select id="goalSel">
+        <option value="comment">Engagement · comment</option>
+        <option value="dm">Lead-gen · DM</option>
+      </select>
+      <select id="voiceSel" title="Brand voice">
+        <option>Voice: Peer expert</option>
+        <option>Voice: Warm</option>
+        <option>Voice: Concise</option>
+      </select>
+    </div>
+  </div>
+  <div class="subtabs" id="subtabs" hidden>
+    <button data-act="tab" data-tab="influencers" aria-pressed="true">Influencers</button>
+    <button data-act="tab" data-tab="queue" aria-pressed="false">Response queue <span class="qbadge" id="qCount">0</span></button>
+  </div>
+</header>
+
+<main id="app"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------------- mock data ---------------- */
+const COL = ["#0e7c86","#3b6ea5","#8a5712","#7a4ea8","#1f7a4d","#b04a6a","#2a7d8c","#986a1f","#4a63b0","#607080"];
+function initials(n){return n.replace(/[^A-Za-z ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
+
+const INF = [
+  {id:"i1", name:"Dr. Sarah Mitchell", role:"VP Quality · Meridian Sterile Compounding", followers:"41.2k", cadence:"12/mo", avgEng:"170", relevance:96, score:92, sub:{Reach:88,Cadence:90,Resonance:94,Relevance:96,Recency:92}, spark:[8,10,7,14,12,18,16,21]},
+  {id:"i2", name:"James Chen, PharmD", role:"Founder · ChenRx 503B Consulting", followers:"33.8k", cadence:"9/mo", avgEng:"120", relevance:93, score:88, sub:{Reach:80,Cadence:78,Resonance:88,Relevance:93,Recency:90}, spark:[6,9,8,11,10,9,13,15]},
+  {id:"i3", name:"Maria Alvarez", role:"Dir. Regulatory Affairs · Cornerstone 503B", followers:"27.5k", cadence:"7/mo", avgEng:"98", relevance:91, score:85, sub:{Reach:74,Cadence:70,Resonance:82,Relevance:91,Recency:86}, spark:[5,7,6,9,8,12,10,11]},
+  {id:"i4", name:"David Okafor", role:"Sterile Compounding SME · Speaker", followers:"22.1k", cadence:"8/mo", avgEng:"88", relevance:84, score:81, sub:{Reach:68,Cadence:74,Resonance:79,Relevance:84,Recency:88}, spark:[4,6,9,7,10,8,11,13]},
+  {id:"i5", name:"Priya Nair, RPh", role:"QA Lead · Helix Outsourcing Facility", followers:"18.4k", cadence:"6/mo", avgEng:"74", relevance:89, score:78, sub:{Reach:60,Cadence:64,Resonance:72,Relevance:89,Recency:80}, spark:[3,5,4,6,8,7,9,10]},
+  {id:"i6", name:"Tom Bradley", role:"Editor · Compounding Today newsletter", followers:"29.0k", cadence:"14/mo", avgEng:"66", relevance:78, score:74, sub:{Reach:76,Cadence:92,Resonance:64,Relevance:78,Recency:74}, spark:[7,6,8,7,9,8,7,9]},
+  {id:"i7", name:"Dr. Elena Fischer", role:"Rapid Microbiology Methods · Researcher", followers:"14.9k", cadence:"5/mo", avgEng:"81", relevance:95, score:71, sub:{Reach:52,Cadence:58,Resonance:76,Relevance:95,Recency:66}, spark:[4,4,6,5,7,6,8,7]},
+  {id:"i8", name:"Robert Kim", role:"503B Operations Consultant", followers:"11.3k", cadence:"4/mo", avgEng:"58", relevance:82, score:66, sub:{Reach:46,Cadence:50,Resonance:62,Relevance:82,Recency:70}, spark:[3,4,3,5,4,6,5,6]},
+  {id:"i9", name:"Lauren Webb", role:"Pharmacy Compliance Attorney", followers:"16.7k", cadence:"3/mo", avgEng:"52", relevance:70, score:63, sub:{Reach:58,Cadence:42,Resonance:56,Relevance:70,Recency:60}, spark:[2,3,5,3,4,3,5,4]},
+  {id:"i10", name:"Marcus Reed", role:"Cleanroom & Environmental Monitoring", followers:"9.8k", cadence:"6/mo", avgEng:"44", relevance:76, score:59, sub:{Reach:40,Cadence:62,Resonance:50,Relevance:76,Recency:64}, spark:[2,3,2,4,3,4,4,5]},
+];
+INF.forEach(x=>{x.pinned=false; x.muted=false;});
+
+const CAND = {id:"c1", name:"Dr. Hannah Voss", role:"Sterility assurance lead · surfaced by discovery", score:69, why:"3 posts on USP <1223> in 30d · avg 84 eng"};
+
+// posts: two per influencer. daysAgo drives the time-window control.
+const POSTS = [
+  {id:"p1", inf:"i1", days:4, react:187, comm:23, status:"New",
+   text:"Just completed our quarterly FDA inspection — zero observations. The environmental-monitoring discipline behind a clean 483 is months of unglamorous work. Proud of this team. #503B #CompoundingPharmacy",
+   drafts:{comment:["Zero observations on a sterile-compounding inspection is a real achievement, and it usually reflects months of quiet discipline behind the scenes. Congratulations to the whole team — that EM and documentation rigour is exactly the foundation that makes faster release testing safe to adopt.",
+   "Congratulations — a clean 483 is never luck, it's the environmental-monitoring and documentation habits nobody sees. That same rigour is what lets facilities trust a rapid release method rather than fear it."],
+   dm:["Hi Dr. Mitchell — genuinely impressed by the zero-observation inspection. We work on rapid sterility release for 503B facilities and I'd love to hear how your team thinks about the release-hold side of quality. Open to a short conversation?"]}},
+  {id:"p2", inf:"i1", days:26, react:142, comm:15, status:"Drafted",
+   text:"Hot take: the 14-day sterility hold is the single biggest planning constraint in sterile compounding and nobody talks about it enough.",
+   drafts:{comment:["Completely agree, and it bites hardest on short-dated preparations where the hold can outlast the product itself. Rapid methods validated to USP <1223> are one way to compress that window while staying non-inferior to the compendial test.",
+   "This is the constraint everyone plans around and no one names. For short-BUD products it's not just inconvenient, it's the rate-limiting step. Worth watching how rapid microbiological methods change that math."],
+   dm:["Hi Dr. Mitchell — your point on the 14-day hold is exactly the problem we work on. Rapid sterility results in under two days, validated to USP <1223>. Would a quick walkthrough be useful?"]}},
+
+  {id:"p3", inf:"i2", days:8, react:94, comm:11, status:"New",
+   text:"New FDA guidance on 503B outsourcing facilities dropped today. The emphasis on process validation is a real shift. Time to review your SOPs. Thread below with my initial read 🧵",
+   drafts:{comment:["Thanks for getting ahead of this — the process-validation emphasis is the part that will take teams the longest to operationalize. Curious whether you read it as raising the bar on revalidation frequency specifically?",
+   "Appreciate the quick breakdown. The SOP review is the obvious step; the harder one is building validation evidence that holds up on the next inspection. Following the thread."],
+   dm:["Hi James — great thread on the new 503B guidance. We build tooling around release testing and validation for facilities navigating exactly this. Would love to compare notes if you're open."]}},
+  {id:"p4", inf:"i2", days:33, react:71, comm:8, status:"New",
+   text:"Reminder: a compounding pharmacy is only as strong as its weakest SOP. Audit the boring ones.",
+   drafts:{comment:["The boring SOPs are exactly where inspections are won or lost. Cleaning validation and EM trending rarely make headlines but they're the backbone of a defensible quality system.",
+   "Strongly agree. The unglamorous SOPs are the ones that quietly protect patients — and the ones easiest to let drift between audits."],
+   dm:["Hi James — loved the SOP reminder. Curious how you'd advise facilities to keep release-testing SOPs current as rapid methods enter the mix. Open to a chat?"]}},
+
+  {id:"p5", inf:"i3", days:12, react:88, comm:9, status:"New",
+   text:"We cut our lot-release cycle by 40% this year without adding headcount. Answer was mostly process, not people.",
+   drafts:{comment:["A 40% cut with no added headcount is the kind of result that reframes release as a process problem rather than a staffing one. Was the sterility hold part of that equation, or mostly downstream documentation?",
+   "Impressive — and refreshing to see release framed as process design instead of hiring. The biggest single lever we see is the sterility hold itself; curious if that was in scope for you."],
+   dm:["Hi Maria — the 40% release-cycle cut caught my eye. We focus on the sterility-hold piece of that equation. Would love to hear what worked for you and share what we're seeing."]}},
+  {id:"p6", inf:"i3", days:44, react:63, comm:6, status:"New",
+   text:"Regulatory affairs isn't the department of 'no'. It's the department of 'here's how we do it safely and faster'.",
+   drafts:{comment:["This framing matters more than it gets credit for. The best regulatory teams turn constraints into a faster, defensible path rather than a wall — which is exactly the mindset that makes new methods adoptable.",
+   "Yes. 'How we do it safely and faster' is the whole game. Speed and compliance are only in tension when regulatory is treated as a gate instead of a design partner."],
+   dm:["Hi Maria — this resonated. Our whole thesis is that faster release and compliance aren't a trade-off. Would you be open to a short conversation on how you've made that real?"]}},
+
+  {id:"p7", inf:"i4", days:6, react:76, comm:7, status:"New",
+   text:"Speaking at the sterile compounding summit next month on aseptic technique training. What questions do you want answered?",
+   drafts:{comment:["Great topic. One question worth addressing: how do teams keep aseptic competency current as throughput scales and release cycles compress? Training often lags the pace of the floor.",
+   "Looking forward to it. Would love your take on how aseptic training programs should evolve as facilities adopt faster release workflows — the human factors rarely keep pace with the process ones."],
+   dm:["Hi David — will your summit talk touch on training for high-throughput release environments? That intersection is exactly where we work. Would enjoy connecting beforehand."]}},
+  {id:"p8", inf:"i4", days:70, react:59, comm:5, status:"Skipped",
+   text:"Throwback to my first cleanroom gowning qualification. We've come a long way in 15 years.",
+   drafts:{comment:["Fifteen years of gowning qualifications is a career's worth of hard-won standards. The tooling has changed enormously; the underlying discipline hasn't.",
+   "A nice reminder of how far the field has matured. The fundamentals you learned then are still what everything faster is built on top of."],
+   dm:["Hi David — enjoyed the throwback. We're building the next chapter of that story on the release-testing side. Would love to connect."]}},
+
+  {id:"p9", inf:"i5", days:9, react:81, comm:12, status:"New",
+   text:"PSA to injectable compounders: your endotoxin testing is only as good as your sampling plan. Revisit it this quarter.",
+   drafts:{comment:["Spot on — the sampling plan is where endotoxin programs quietly fail, long before the assay does. Pairing a rigorous plan with faster turnaround is where a lot of facilities have room to gain.",
+   "This deserves more attention. LAL results are only as trustworthy as the sampling behind them. A good reminder that method speed never substitutes for sampling design."],
+   dm:["Hi Priya — great endotoxin PSA. We work on rapid release testing including endotoxin workflows and would value your perspective on sampling design. Open to a quick chat?"]}},
+  {id:"p10", inf:"i5", days:50, react:47, comm:4, status:"New",
+   text:"Environmental monitoring trend analysis is eating half my week. There has to be a better way to spot excursions early.",
+   drafts:{comment:["The manual trend-analysis grind is real, and the cost isn't just time — it's how late excursions get caught. This is exactly the kind of repetitive, high-stakes review where good tooling earns its keep.",
+   "Half a week on EM trending is a signal that the workflow, not the effort, is the bottleneck. Early-excursion detection is one of the clearest cases for smarter tooling in QA."],
+   dm:["Hi Priya — the EM trend-analysis pain is something we hear constantly. Would love to learn how your team handles it today and share a few approaches. Worth a short call?"]}},
+
+  {id:"p11", inf:"i6", days:5, react:66, comm:6, status:"New",
+   text:"This week in Compounding Today: drug-shortage pressure is pushing more hospitals toward 503B outsourcing. Full roundup linked.",
+   drafts:{comment:["The shortage-to-outsourcing pipeline is one of the defining trends of the year. The interesting second-order effect is the pressure it puts on release capacity — production scaling only helps if testing keeps pace.",
+   "Great roundup. Worth watching how the demand surge reshapes the quality-and-release side, not just production — that's where the next bottleneck is forming."],
+   dm:["Hi Tom — really value the newsletter. We're seeing the release side become the bottleneck as outsourcing scales; happy to share data if it's ever useful for a piece."]}},
+  {id:"p12", inf:"i6", days:38, react:52, comm:3, status:"New",
+   text:"Question for the compounding community: what's the most underrated tool in your quality workflow?",
+   drafts:{comment:["Underrated pick: a searchable, current source of truth for policies and validation status. Most quality slowdowns are really information-retrieval problems in disguise.",
+   "For us it's anything that shortens the sterility hold — it's underrated because people treat 14 days as immovable when it increasingly isn't."],
+   dm:["Hi Tom — fun prompt. If you ever compile community answers, we'd love to contribute a perspective on release-testing tools. Open to connecting."]}},
+
+  {id:"p13", inf:"i7", days:11, react:81, comm:14, status:"New",
+   text:"Our lab validated a rapid microbial method against USP <1223> this month. The limit-of-detection data surprised even me.",
+   drafts:{comment:["Congratulations — <1223> validation with strong LOD data is exactly what moves rapid methods from 'promising' to 'adoptable'. Would love to hear how you approached the comparative study design.",
+   "This is the work that matters. Non-inferiority on LOD is the hurdle everyone worries about most, so seeing solid data is genuinely encouraging for the whole field."],
+   dm:["Hi Dr. Fischer — your <1223> validation is right in our wheelhouse; we run rapid sterility on qPCR workflows. Would really enjoy comparing method-validation notes."]}},
+  {id:"p14", inf:"i7", days:55, react:63, comm:7, status:"New",
+   text:"Reminder that 'rapid' means nothing without validation. Speed without equivalence is just a shortcut.",
+   drafts:{comment:["Exactly right, and it's the line the whole category has to hold. A rapid result is only worth anything if it's statistically non-inferior to the compendial method — speed and rigour aren't a trade.",
+   "This should be pinned. 'Rapid' without demonstrated equivalence erodes trust in every legitimate method. Validation is the price of admission, not a nice-to-have."],
+   dm:["Hi Dr. Fischer — completely aligned with your take on validation. It's core to how we build. Would value your perspective on where the category still needs to mature."]}},
+
+  {id:"p15", inf:"i8", days:15, react:58, comm:5, status:"New",
+   text:"Scaling a 503B facility teaches you fast: your quality system has to scale before your output does.",
+   drafts:{comment:["Hard-won and true. Output scaling exposes every weak seam in the quality system, and release capacity is usually the first to buckle. Building that headroom early is underrated.",
+   "This is the lesson most facilities learn the expensive way. Quality and release capacity have to lead growth, not chase it."],
+   dm:["Hi Robert — this matched what we see across facilities scaling their quality systems. We work on the release-capacity piece specifically. Open to trading notes?"]}},
+  {id:"p16", inf:"i8", days:66, react:41, comm:2, status:"New",
+   text:"Underappreciated fact: most CAPA backlogs are really documentation-retrieval problems.",
+   drafts:{comment:["This is a sharp observation. When the source of truth is scattered, every CAPA turns into an archaeology project. A current, searchable knowledge base quietly fixes a surprising share of the backlog.",
+   "Agreed — the backlog is rarely about willingness, it's about how long it takes to find the authoritative answer. Fix retrieval and the queue shrinks on its own."],
+   dm:["Hi Robert — your CAPA-as-retrieval point really landed. Curious how you'd structure a source of truth that stays current. Worth a short conversation?"]}},
+
+  {id:"p17", inf:"i9", days:20, react:52, comm:9, status:"New",
+   text:"Legal reminder: your marketing claims about compounded products are held to a higher bar than you think. Document your substantiation.",
+   drafts:{comment:["An important and easily overlooked point. In a regulated space, an unsubstantiated claim is a liability, not a growth lever — which is exactly why grounded, evidence-backed content matters more here than almost anywhere.",
+   "This is worth heeding. The discipline of substantiating every claim isn't a constraint on marketing, it's what makes the marketing durable and defensible."],
+   dm:["Hi Lauren — your point on claim substantiation is one we take seriously. We build content grounded in validated data for exactly this reason. Would value your perspective."]}},
+  {id:"p18", inf:"i9", days:60, react:38, comm:3, status:"New",
+   text:"A recall is a compliance event, a communication event, and a trust event — in that order of urgency but reverse order of lasting impact.",
+   drafts:{comment:["A precise way to put it. The trust dimension outlasts the paperwork by years, which is why how a facility communicates during a recall matters as much as the corrective action itself.",
+   "Well framed. The compliance clock is loudest, but the trust cost is the one that compounds. Worth every team internalizing before they ever need it."],
+   dm:[""]}},
+
+  {id:"p19", inf:"i10", days:7, react:44, comm:4, status:"New",
+   text:"Cleanroom tip: your gowning failures usually trace back to a training gap, not a discipline gap. Fix the program, not the person.",
+   drafts:{comment:["This distinction matters enormously. Treating gowning failures as training-system problems rather than individual ones is how you actually move the numbers — and it's a healthier culture too.",
+   "Great reframe. Blaming the person hides the systemic fix. Most contamination-control gains come from better programs, not more pressure on staff."],
+   dm:["Hi Marcus — your take on gowning failures as a program problem resonated. We think about human factors in high-throughput release too. Open to connecting?"]}},
+  {id:"p20", inf:"i10", days:30, react:36, comm:2, status:"New",
+   text:"EM data is only useful if someone acts on it before the next batch. Speed of response beats volume of data.",
+   drafts:{comment:["Exactly — EM data has a short half-life of usefulness. The value is in acting before the next batch, which is a response-time problem far more than a data-volume one.",
+   "This is the whole point of monitoring. Data nobody acts on in time is just documentation. Fast, decision-ready signals are what protect the next batch."],
+   dm:["Hi Marcus — strongly agree that EM value is about response speed. That philosophy runs through how we think about release testing too. Worth a chat?"]}},
+];
+
+const NO_CTA = new Set(["p18"]); // recall/negative context -> comment shown, DM disabled, needs review
+const REVIEW = new Set(["p18","p17"]);
+
+/* ---------------- state ---------------- */
+const ps = {}; // per-post state
+POSTS.forEach(p=>{ ps[p.id]={status:p.status, goal:document.getElementById("goalSel").value, variant:0, edited:null, editing:false}; });
+const state = {mode:"influencer", tab:"influencers", view:"board", sel:null, win:"90", showMuted:false, candidate:CAND};
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const app=$("#app");
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function infById(id){return INF.find(x=>x.id===id);}
+function color(id){const i=INF.findIndex(x=>x.id===id); return COL[(i>=0?i:0)%COL.length];}
+function avatar(name,id,cls){return `<span class="av ${cls||''}" style="background:${color(id)}">${initials(name)}</span>`;}
+function daysLabel(d){return d+"d";}
+function sparkSVG(arr){const w=74,h=30,mx=Math.max(...arr),mn=Math.min(...arr),pad=3;
+  const pts=arr.map((v,i)=>{const x=pad+i*((w-2*pad)/(arr.length-1)); const y=h-pad-((v-mn)/((mx-mn)||1))*(h-2*pad); return x.toFixed(1)+","+y.toFixed(1);}).join(" ");
+  const last=pts.split(" ").pop().split(",");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${last[0]}" cy="${last[1]}" r="2.1" fill="var(--accent)"/></svg>`;}
+function resolveDraft(p){const s=ps[p.id]; if(s.edited!=null) return s.edited; const arr=p.drafts[s.goal]||[""]; return arr[s.variant%arr.length]||arr[0]||"";}
+function newCount(id){return POSTS.filter(p=>p.inf===id && ps[p.id].status==="New").length;}
+function toast(msg){const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1600);}
+
+/* ---------------- render ---------------- */
+function render(){
+  // chrome
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.setAttribute("aria-pressed", b.dataset.mode===state.mode));
+  const sub=$("#subtabs"); sub.hidden = state.mode!=="hybrid";
+  if(state.mode==="hybrid"){
+    document.querySelectorAll('#subtabs button').forEach(b=>b.setAttribute("aria-pressed", b.dataset.tab===state.tab));
+    $("#qCount").textContent = POSTS.filter(p=>["New","Drafted"].includes(ps[p.id].status)).length;
+  }
+  // body
+  if(state.view==="workspace"){ app.innerHTML=viewWorkspace(state.sel); return; }
+  if(state.mode==="hybrid" && state.tab==="queue"){ app.innerHTML=viewQueue(); return; }
+  app.innerHTML=viewBoard();
+}
+
+function viewBoard(){
+  const active=INF.filter(x=>!x.muted);
+  active.sort((a,b)=> (b.pinned-a.pinned) || (b.score-a.score));
+  const mutedN=INF.filter(x=>x.muted).length;
+  let rows=active.map((x)=>{
+    const rank=x.pinned?"·":(INF.filter(y=>!y.muted).sort((a,b)=>b.score-a.score).findIndex(y=>y.id===x.id)+1);
+    const nc=newCount(x.id);
+    return `<li class="inf ${x.pinned?'pinned':''}" data-act="open" data-id="${x.id}" tabindex="0">
+      <div class="rank">${x.pinned?'':rank}</div>
+      ${avatar(x.name,x.id)}
+      <div class="who">
+        <div class="nm">${esc(x.name)} ${nc?`<span class="badge-new">${nc} new</span>`:''}</div>
+        <div class="rl">${esc(x.role)}</div>
+        <div class="stat"><span>${x.followers} followers</span><span>${x.cadence}</span><span>~${x.avgEng} avg eng</span><span>${x.relevance}% relevant</span></div>
+      </div>
+      <div class="right">
+        ${sparkSVG(x.spark)}
+        <div class="score"><div class="num">${x.score}</div><div class="lab">score</div><div class="scorebar"><span style="width:${x.score}%"></span></div></div>
+        <div class="infacts">
+          <button class="iconbtn" data-act="pin" data-id="${x.id}" aria-pressed="${x.pinned}" title="Pin to list" onclick="event.stopPropagation()">📌</button>
+          <button class="iconbtn" data-act="mute" data-id="${x.id}" title="Mute / exclude" onclick="event.stopPropagation()">🔇</button>
+        </div>
+      </div></li>`;
+  }).join("");
+
+  const cand = state.candidate ? `<div class="candidate">
+      <div class="rank mono">＋</div>
+      ${avatar(state.candidate.name,'i7')}
+      <div class="who"><div class="nm">${esc(state.candidate.name)}</div><div class="rl">${esc(state.candidate.role)}</div>
+        <div class="tagline">↳ ${esc(state.candidate.why)}</div></div>
+      <div class="rowbtns"><button class="btn primary" data-act="addcand">Add to list</button><button class="btn ghost" data-act="dropcand">Dismiss</button></div>
+    </div>` : "";
+
+  return `<div class="vhead">
+      <div><h1 class="vtitle">Ranked influencers</h1><p class="vsub">Compounding pharmacy · scored on reach, cadence, resonance, relevance & recency. Pin or mute to override the algorithm.</p></div>
+      <div class="rowbtns"><button class="btn" data-act="recompute">↻ Recompute ranking</button><button class="btn" data-act="fakeadd">＋ Add manually</button></div>
+    </div>
+    <ul class="board">${rows}</ul>
+    ${cand}
+    ${mutedN?`<div class="mutedbar">${mutedN} muted · <button data-act="togglemuted">${state.showMuted?'hide':'show'}</button></div>`:''}
+    ${state.showMuted?renderMuted():''}`;
+}
+function renderMuted(){
+  return `<ul class="board" style="margin-top:8px;opacity:.6">`+INF.filter(x=>x.muted).map(x=>`<li class="inf" style="cursor:default">
+    <div class="rank">–</div>${avatar(x.name,x.id)}<div class="who"><div class="nm">${esc(x.name)}</div><div class="rl">${esc(x.role)}</div></div>
+    <div class="right"><button class="btn ghost" data-act="unmute" data-id="${x.id}">Un-mute</button></div></li>`).join("")+`</ul>`;
+}
+
+function viewWorkspace(id){
+  const x=infById(id);
+  const back = state.mode==="hybrid" ? "Influencers" : "All influencers";
+  const posts=POSTS.filter(p=>p.inf===id && (state.win==="all"||p.days<=Number(state.win)));
+  const metrics=Object.entries(x.sub).map(([k,v])=>`<div class="metric"><div class="mlab">${k}</div><div class="mval">${v}</div><div class="mbar"><span style="width:${v}%"></span></div></div>`).join("");
+  const cards = posts.length ? posts.map(postCard).join("") : `<div class="empty">No posts in this window. Try widening the date range.</div>`;
+  return `<div class="rowbtns" style="margin-bottom:14px"><button class="btn ghost" data-act="back">← ${back}</button></div>
+    <div class="wshead">
+      <div class="wstop">${avatar(x.name,x.id)}
+        <div><div class="wsname">${esc(x.name)}</div><div class="wsrole">${esc(x.role)}</div>
+          <a class="wslink" data-act="noop">linkedin.com/in/${x.name.toLowerCase().replace(/[^a-z]+/g,'-').replace(/(^-|-$)/g,'')}</a></div>
+        <div class="wsscore"><div class="num">${x.score}</div><div class="lab mono" style="font-size:9.5px;letter-spacing:.1em;color:var(--faint)">INFLUENCE SCORE</div>
+          <div class="infacts" style="justify-content:flex-end;margin-top:6px">
+            <button class="iconbtn" data-act="pin" data-id="${x.id}" aria-pressed="${x.pinned}" title="Pin">📌</button>
+            <button class="iconbtn" data-act="mute" data-id="${x.id}" title="Mute">🔇</button></div></div>
+      </div>
+      <div class="breakdown">${metrics}</div>
+    </div>
+    <div class="windowctl"><span class="lab">Posts from</span>
+      <div class="seg" role="group" aria-label="Time window">
+        <button data-act="win" data-win="30" aria-pressed="${state.win==='30'}">Last 30d</button>
+        <button data-act="win" data-win="90" aria-pressed="${state.win==='90'}">Last 90d</button>
+        <button data-act="win" data-win="all" aria-pressed="${state.win==='all'}">All / last 10</button>
+      </div>
+      <span class="vsub" style="margin:0">${posts.length} post${posts.length!==1?'s':''}</span>
+    </div>
+    <div class="cards">${cards}</div>`;
+}
+
+function viewQueue(){
+  const posts=POSTS.filter(p=>["New","Drafted"].includes(ps[p.id].status)).sort((a,b)=>a.days-b.days);
+  const cards=posts.length?posts.map(p=>postCard(p,true)).join(""):`<div class="empty">Queue clear. Every post has been actioned.</div>`;
+  return `<div class="vhead"><div><h1 class="vtitle">Response queue</h1>
+    <p class="vsub">Every unactioned post across all influencers, newest first. Clear it like an inbox.</p></div>
+    <div class="rowbtns"><button class="btn" data-act="recompute">↻ Refresh feed</button></div></div>
+    <div class="cards">${cards}</div>`;
+}
+
+function postCard(p, showInf){
+  const s=ps[p.id]; const x=infById(p.inf);
+  const dmDisabled = NO_CTA.has(p.id);
+  const goal = (s.goal==="dm" && dmDisabled) ? "comment" : s.goal;
+  const draft = resolveDraft({...p, drafts:p.drafts}) || (goal==="dm"?"—":"");
+  const done = ["Posted","Skipped"].includes(s.status);
+  const attr = `<div class="cattr">${avatar(x.name,x.id)}
+      <div><div class="nm">${esc(x.name)}</div><div class="meta">${x.role.split(' · ')[1]||''} · ${daysLabel(p.days)} · ${p.react}👍 ${p.comm}💬</div></div>
+      <span class="chip ${s.status}">${s.status}</span></div>`;
+  const editor = s.editing
+    ? `<textarea class="editor" data-act="typing" data-post="${p.id}">${esc(draft)}</textarea>`
+    : `<div class="drafttext">${goal==="dm"&&dmDisabled?'<span style="color:var(--muted)">DM disabled on recall / compliance-negative posts — public comment only.</span>':esc(draft)}</div>`;
+  const grounded = `<div class="grounded"><span class="gtag">grounded: brand-voice</span><span class="gtag">primer</span><span class="gtag">facts</span>${REVIEW.has(p.id)?'<span class="review">⚑ needs human review</span>':''}</div>`;
+  return `<div class="card ${done?'done':''}">
+    ${attr}
+    <div class="ptext">${esc(p.text)}</div>
+    <div class="draft">
+      <div class="drafthead">
+        <span class="draftlabel">↳ Sapho draft <b>${goal==="comment"?"comment · engagement":"DM · lead-gen"}</b></span>
+        <div class="miniseg" role="group" aria-label="Response type">
+          <button data-act="goal" data-post="${p.id}" data-goal="comment" aria-pressed="${goal==='comment'}">Comment</button>
+          <button data-act="goal" data-post="${p.id}" data-goal="dm" aria-pressed="${goal==='dm'}" ${dmDisabled?'disabled title="Disabled for this post" style="opacity:.4;cursor:not-allowed"':''}>DM</button>
+        </div>
+      </div>
+      ${editor}
+      ${grounded}
+      <div class="actions">
+        <button class="act" data-act="regen" data-post="${p.id}">↻ Regenerate</button>
+        <button class="act" data-act="${s.editing?'doneedit':'edit'}" data-post="${p.id}">${s.editing?'✓ Done':'✎ Edit'}</button>
+        <button class="act" data-act="copy" data-post="${p.id}">⧉ Copy</button>
+        <button class="act post" data-act="post" data-post="${p.id}">${goal==='comment'?'Post ↗':'Send ↗'}</button>
+        <button class="act skip" data-act="skip" data-post="${p.id}">Skip</button>
+      </div>
+    </div></div>`;
+}
+
+/* ---------------- events ---------------- */
+document.getElementById("goalSel").addEventListener("change", e=>{
+  Object.values(ps).forEach(s=>{ if(s.edited==null) s.goal=e.target.value; });
+  render();
+});
+app.addEventListener("input", e=>{
+  const t=e.target.closest('[data-act="typing"]'); if(!t) return;
+  ps[t.dataset.post].edited = t.value;
+});
+document.addEventListener("click", e=>{
+  const el=e.target.closest("[data-act]"); if(!el) return;
+  const a=el.dataset.act, id=el.dataset.id, pid=el.dataset.post;
+  switch(a){
+    case "mode": state.mode=el.dataset.mode; state.view="board"; state.tab="influencers"; render(); break;
+    case "tab": state.tab=el.dataset.tab; state.view="board"; render(); break;
+    case "open": state.view="workspace"; state.sel=id; state.win="90"; render(); window.scrollTo(0,0); break;
+    case "back": state.view="board"; render(); window.scrollTo(0,0); break;
+    case "win": state.win=el.dataset.win; render(); break;
+    case "pin": {const x=infById(id); x.pinned=!x.pinned; if(x.pinned)x.muted=false; toast(x.pinned?"Pinned — kept regardless of score":"Unpinned"); render(); break;}
+    case "mute": {const x=infById(id); x.muted=true; x.pinned=false; if(state.view==="workspace"){state.view="board";} toast("Muted — removed from active list"); render(); break;}
+    case "unmute": {infById(id).muted=false; toast("Restored"); render(); break;}
+    case "togglemuted": state.showMuted=!state.showMuted; render(); break;
+    case "recompute": toast("Re-ran discovery · scores updated · 1 new candidate surfaced"); if(!state.candidate)state.candidate=CAND; render(); break;
+    case "addcand": toast("Added Dr. Hannah Voss — will re-score on next run"); state.candidate=null; render(); break;
+    case "dropcand": toast("Dismissed — won't resurface this candidate"); state.candidate=null; render(); break;
+    case "fakeadd": toast("In the build: paste a profile URL → discovery scores it → it joins the list"); break;
+    case "goal": {const s=ps[pid]; s.goal=el.dataset.goal; s.variant=0; s.edited=null; render(); break;}
+    case "regen": {const s=ps[pid]; s.edited=null; s.variant++; if(s.status==="New")s.status="Drafted"; toast("Regenerated"); render(); break;}
+    case "edit": {ps[pid].editing=true; render(); break;}
+    case "doneedit": {ps[pid].editing=false; if(ps[pid].status==="New")ps[pid].status="Drafted"; toast("Draft saved"); render(); break;}
+    case "copy": toast("Copied to clipboard"); try{navigator.clipboard&&navigator.clipboard.writeText(resolveDraft(POSTS.find(p=>p.id===pid)));}catch(_){ } break;
+    case "post": {ps[pid].status="Posted"; toast(ps[pid].goal==='dm'?"Logged as sent · opened profile":"Logged as posted · opened post"); render(); break;}
+    case "skip": {ps[pid].status="Skipped"; ps[pid].editing=false; toast("Skipped"); render(); break;}
+    case "noop": e.preventDefault(); break;
+  }
+});
+app.addEventListener("keydown", e=>{
+  if(e.key==="Enter"||e.key===" "){const li=e.target.closest('li.inf[data-act="open"]'); if(li){e.preventDefault(); state.view="workspace"; state.sel=li.dataset.id; state.win="90"; render(); window.scrollTo(0,0);}}
+});
+
+render();
+</script>

@@ -4,19 +4,26 @@
  * Discovery Script - Find influencers via keyword search
  *
  * This script uses the Apify LinkedIn post search actor to discover influencers
- * posting about compounding pharmacy topics. Results are ranked by post frequency
- * and engagement, then saved to discovery.json for validation.
+ * posting about compounding pharmacy topics. Results are aggregated by author,
+ * scored via lib/score.ts, and saved to discovery.json for validation.
  *
  * REQUIREMENTS:
  * - APIFY_TOKEN environment variable must be set
+ * - Apify account with access to harvestapi/linkedin-post-search
  *
  * USAGE:
  *   npm run discover
  */
 
+import dotenv from 'dotenv';
 import { ApifyClient } from 'apify-client';
 import fs from 'fs/promises';
 import path from 'path';
+import { scoreInfluencer } from '../lib/score';
+import type { DiscoveredInfluencer, InfluencerSignals } from '../lib/types';
+
+// Load .env.local for environment variables
+dotenv.config({ path: '.env.local' });
 
 const APIFY_TOKEN = process.env.APIFY_TOKEN;
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -30,6 +37,20 @@ const KEYWORDS = [
   'USP 800',
   'pharmaceutical compounding',
 ];
+
+// Quality filters
+const CREDENTIALED_ONLY = process.env.CREDENTIALED_ONLY === 'true'; // Set via env var
+const CREDENTIAL_PATTERN = /PharmD|Pharm\.?\s?D|RPh|BCSCP|CPhT|FAPC|FACA/;
+
+// Helper: Clean LinkedIn URL (strip query strings)
+function cleanLinkedInUrl(url: string): string {
+  return url.split('?')[0];
+}
+
+// Helper: Check if author is credentialed
+function isCredentialed(name: string): boolean {
+  return CREDENTIAL_PATTERN.test(name);
+}
 
 async function main() {
   if (!APIFY_TOKEN) {
@@ -66,35 +87,71 @@ async function main() {
 
     try {
       const run = await client.actor('harvestapi/linkedin-post-search').call({
-        keywords: [keyword],
-        maxPostsCount: 50, // Adjust based on Apify plan limits
+        searchQueries: [keyword],
+        maxPosts: 150,
+        sortBy: 'relevance',
       });
 
       const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
+      // Log output keys on first item (defensive mapping)
+      if (items.length > 0) {
+        console.log(`  [DEBUG] First item keys: ${Object.keys(items[0]).join(', ')}`);
+      }
+
       console.log(`  Found ${items.length} posts\n`);
 
-      // Aggregate by author
+      // Aggregate by author with defensive field mapping
       for (const item of items) {
-        const authorUrl = item.authorProfileUrl || item.author?.profileUrl;
-        const authorName = item.authorName || item.author?.name;
+        const authorName = item.author?.name;
+        const authorUrl = item.author?.linkedinUrl;
+        const followerCount = item.author?.followerCount; // Usually absent
+
+        // Extract engagement counts (handle both number and array formats)
+        let reactions = 0;
+        let comments = 0;
+
+        if (typeof item.engagement?.reactions === 'number') {
+          reactions = item.engagement.reactions;
+        } else if (Array.isArray(item.reactions)) {
+          reactions = item.reactions.length;
+        } else if (typeof item.reactions === 'number') {
+          reactions = item.reactions;
+        }
+
+        if (typeof item.engagement?.comments === 'number') {
+          comments = item.engagement.comments;
+        } else if (Array.isArray(item.comments)) {
+          comments = item.comments.length;
+        } else if (typeof item.comments === 'number') {
+          comments = item.comments;
+        }
 
         if (!authorUrl || !authorName) continue;
 
-        if (!authorStats.has(authorUrl)) {
-          authorStats.set(authorUrl, {
+        // Exclude non-person authors (company pages)
+        if (authorUrl.includes('/company/')) continue;
+
+        // Optional: Filter by credentials
+        if (CREDENTIALED_ONLY && !isCredentialed(authorName)) continue;
+
+        // Clean URL (strip query strings)
+        const cleanedUrl = cleanLinkedInUrl(authorUrl);
+
+        if (!authorStats.has(cleanedUrl)) {
+          authorStats.set(cleanedUrl, {
             name: authorName,
-            linkedinUrl: authorUrl,
+            linkedinUrl: cleanedUrl,
             postCount: 0,
             totalEngagement: 0,
-            followerCount: item.author?.followerCount,
+            followerCount,
             keywords: new Set(),
           });
         }
 
-        const stats = authorStats.get(authorUrl)!;
+        const stats = authorStats.get(cleanedUrl)!;
         stats.postCount++;
-        stats.totalEngagement += (item.reactionCount || 0) + (item.commentCount || 0);
+        stats.totalEngagement += reactions + comments;
         stats.keywords.add(keyword);
       }
     } catch (error) {
@@ -103,17 +160,57 @@ async function main() {
     }
   }
 
-  // Convert to array and sort by engagement
-  const discovered = Array.from(authorStats.values())
-    .map((stats) => ({
-      name: stats.name,
-      linkedinUrl: stats.linkedinUrl,
-      postFrequency: stats.postCount,
-      totalEngagement: stats.totalEngagement,
-      followerCount: stats.followerCount,
-      discoveredKeywords: Array.from(stats.keywords),
-    }))
-    .sort((a, b) => b.totalEngagement - a.totalEngagement);
+  console.log(`\n📊 Scoring ${authorStats.size} discovered influencers...\n`);
+
+  // Build signals and score each candidate
+  const discovered: DiscoveredInfluencer[] = Array.from(authorStats.values())
+    .map((stats) => {
+      // Build signals object
+      const signals: InfluencerSignals = {
+        followers: stats.followerCount,
+        postsPerMonth: stats.postCount, // Rough estimate: postCount in search window
+        avgEngagement: stats.postCount > 0
+          ? Math.round(stats.totalEngagement / stats.postCount)
+          : undefined,
+        // Scale relevance from keyword match count (0-6 keywords → 0-100)
+        relevance: Math.min(100, (stats.keywords.size / KEYWORDS.length) * 100),
+      };
+
+      // Score this candidate
+      const scoringResult = scoreInfluencer(signals);
+
+      return {
+        name: stats.name,
+        linkedinUrl: stats.linkedinUrl,
+        postFrequency: stats.postCount,
+        totalEngagement: stats.totalEngagement,
+        followerCount: stats.followerCount,
+        discoveredKeywords: Array.from(stats.keywords),
+        score: scoringResult?.score,
+        subscores: scoringResult?.subscores,
+      };
+    })
+    // Rank by score (highest first), break ties by relevance then postFrequency
+    .sort((a, b) => {
+      // Handle nulls
+      if (a.score === undefined) return 1;
+      if (b.score === undefined) return -1;
+
+      // Primary: score (descending)
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      // Tie-breaker 1: relevance (descending)
+      const aRelevance = (a.discoveredKeywords.length / KEYWORDS.length) * 100;
+      const bRelevance = (b.discoveredKeywords.length / KEYWORDS.length) * 100;
+      if (bRelevance !== aRelevance) {
+        return bRelevance - aRelevance;
+      }
+
+      // Tie-breaker 2: postFrequency (descending)
+      return b.postFrequency - a.postFrequency;
+    });
 
   // Save results
   const discoveryPath = path.join(DATA_DIR, 'discovery.json');
@@ -122,11 +219,12 @@ async function main() {
   console.log(`\n✅ Discovery complete!`);
   console.log(`   Found ${discovered.length} unique influencers`);
   console.log(`   Saved to ${discoveryPath}`);
-  console.log(`\n📊 Top 5 by engagement:`);
+  console.log(`\n📊 Top 5 by score:`);
 
   discovered.slice(0, 5).forEach((inf, idx) => {
+    const scoreStr = inf.score !== undefined ? inf.score.toFixed(1) : '—';
     console.log(
-      `   ${idx + 1}. ${inf.name} - ${inf.totalEngagement} engagement (${inf.postFrequency} posts)`
+      `   ${idx + 1}. ${inf.name} - Score: ${scoreStr} (${inf.totalEngagement} engagement, ${inf.postFrequency} posts)`
     );
   });
 

@@ -34,3 +34,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secrets — never commit real env files (keep the example)
+.env
+.env.*
+!.env.example
+
+# AI assistant local memory & scratch (personal, not for the repo)
+MEMORY.md
+CLAUDE.local.md
+.claude/settings.local.json
+*.local.md
+scratch/
+.notes/
+
+# Environment variables with secrets
+.env.local
+
+# Local-only data (ephemeral, never commit)
+data/overrides.json
+.local/
+*.jsonl
