@@ -122,7 +122,14 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
-CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+OUTPUT FORMAT - EXTREMELY IMPORTANT:
+- Return ONLY the raw comment text
+- NO markdown headers (**, ##, ###)
+- NO sections labeled "Reasoning", "Approach", "Final Comment", etc.
+- NO numbered explanations
+- NO meta-commentary about the comment
+- Just the plain comment text that will be copy-pasted directly to LinkedIn
+- Think of this as filling in a text box - nothing but the comment itself
 
 RESPONSE:`;
   }
@@ -237,7 +244,14 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
-CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+OUTPUT FORMAT - EXTREMELY IMPORTANT:
+- Return ONLY the raw comment text
+- NO markdown headers (**, ##, ###)
+- NO sections labeled "Reasoning", "Approach", "Final Comment", etc.
+- NO numbered explanations
+- NO meta-commentary about the comment
+- Just the plain comment text that will be copy-pasted directly to LinkedIn
+- Think of this as filling in a text box - nothing but the comment itself
 
 RESPONSE:`;
   }
@@ -381,7 +395,14 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
-CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+OUTPUT FORMAT - EXTREMELY IMPORTANT:
+- Return ONLY the raw comment text
+- NO markdown headers (**, ##, ###)
+- NO sections labeled "Reasoning", "Approach", "Final Comment", etc.
+- NO numbered explanations
+- NO meta-commentary about the comment
+- Just the plain comment text that will be copy-pasted directly to LinkedIn
+- Think of this as filling in a text box - nothing but the comment itself
 
 RESPONSE:`;
 
@@ -443,7 +464,14 @@ Write a professional, engaging LinkedIn comment that:
 
 Keep it concise (2-4 sentences typically work best on LinkedIn).
 
-CRITICAL: Return ONLY the final comment text itself, ready to post. Do NOT include any reasoning, breakdown, meta-commentary, explanations, or headers. Just the comment.
+OUTPUT FORMAT - EXTREMELY IMPORTANT:
+- Return ONLY the raw comment text
+- NO markdown headers (**, ##, ###)
+- NO sections labeled "Reasoning", "Approach", "Final Comment", etc.
+- NO numbered explanations
+- NO meta-commentary about the comment
+- Just the plain comment text that will be copy-pasted directly to LinkedIn
+- Think of this as filling in a text box - nothing but the comment itself
 
 RESPONSE:`;
 
