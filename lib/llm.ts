@@ -8,6 +8,39 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 const GROQ_MODEL = process.env.GROQ_MODEL || 'groq/compound';
 
 /**
+ * Clean up LLM response by removing meta-commentary and reasoning
+ */
+function cleanResponse(text: string): string {
+  // Remove common meta-commentary patterns
+  const patterns = [
+    // Remove everything before "Final Comment" or similar headers
+    /^[\s\S]*?(?:final\s+(?:linkedin\s+)?comment|response|output)[\s\S]*?[:\-—]\s*/im,
+    // Remove "Reasoning" or "Approach" sections
+    /\*\*(?:reasoning|approach|rationale)[\s\S]*?(?=\n\n|$)/gim,
+    // Remove numbered explanation lists
+    /^\d+\.\s+\*\*[^*]+\*\*[\s\S]*?(?=\n\n|$)/gim,
+  ];
+
+  let cleaned = text.trim();
+
+  // Apply patterns
+  for (const pattern of patterns) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+
+  // If we see a blockquote (>), extract just that content
+  const blockquoteMatch = cleaned.match(/^>\s*(.+?)$/m);
+  if (blockquoteMatch) {
+    return blockquoteMatch[1].trim();
+  }
+
+  // Remove any remaining markdown bold/headers at the start
+  cleaned = cleaned.replace(/^[\s\S]*?(?=\w)/, '');
+
+  return cleaned.trim();
+}
+
+/**
  * LLM Provider abstraction layer
  *
  * Supports multiple providers (Gemini, Groq) selected via LLM_PROVIDER env var
@@ -66,7 +99,8 @@ class GeminiProvider implements LLMProviderInterface {
       console.log('[Gemini] Generating with model:', GEMINI_MODEL);
       const result = await model.generateContent(prompt);
       const response = result.response;
-      const text = response.text();
+      const rawText = response.text();
+      const text = cleanResponse(rawText);
       console.log('[Gemini] Success! Generated', text.length, 'chars');
 
       const latencyMs = Date.now() - startTime;
