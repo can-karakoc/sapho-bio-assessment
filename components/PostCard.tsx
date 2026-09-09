@@ -61,10 +61,11 @@ export function PostCard({
   const tweakPanelRef = useRef<HTMLDivElement>(null);
 
   // Ephemeral state - NEVER persisted to files
-  // IMPORTANT: Load initial status from localStorage first, then fall back to file
+  // Start with file status for SSR/hydration, then update from localStorage
   const [localStatus, setLocalStatus] = useState<
     "new" | "drafted" | "posted" | "skipped" | undefined
-  >(() => getInitialStatus(post.id, post.status));
+  >(post.status);
+  const [mounted, setMounted] = useState(false);
   const [draft, setDraft] = useState<GeneratedResponse | null>(null);
   const [draftText, setDraftText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -74,6 +75,7 @@ export function PostCard({
 
   // Load persisted draft state from localStorage (full state restoration)
   useEffect(() => {
+    setMounted(true);
     try {
       const stored = localStorage.getItem("saphoEngage.v1.drafts");
       if (stored) {

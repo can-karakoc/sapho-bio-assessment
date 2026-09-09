@@ -24,6 +24,7 @@ export function StatusChip({ status }: StatusChipProps) {
   return (
     <span
       className={`font-sans text-[10px] tracking-tight uppercase px-2 py-1 rounded-sm whitespace-nowrap ${statusStyles[normalizedStatus]}`}
+      suppressHydrationWarning
     >
       {statusLabels[normalizedStatus]}
     </span>
