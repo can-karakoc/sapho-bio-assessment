@@ -130,7 +130,7 @@ export function WorkspaceContent({
               onClick={() => setTimeWindow(window)}
               className={`font-sans border-none bg-transparent text-xs font-medium px-3 py-1.5 rounded-sm transition-all uppercase tracking-tight ${
                 timeWindow === window
-                  ? "bg-highlight-teal text-surface"
+                  ? "bg-highlight-mint text-ink"
                   : "text-muted hover:text-ink"
               }`}
             >
