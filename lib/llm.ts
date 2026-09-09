@@ -194,7 +194,8 @@ class GroqProvider implements LLMProviderInterface {
         max_tokens: 300,
       });
 
-      const text = completion.choices[0]?.message?.content || '';
+      const rawText = completion.choices[0]?.message?.content || '';
+      const text = cleanResponse(rawText);
       const latencyMs = Date.now() - startTime;
 
       return {
