@@ -24,8 +24,9 @@ export function QueueList({ posts, influencers }: QueueListProps) {
       if (stored) {
         const drafts = JSON.parse(stored);
         const posted = new Set<string>();
-        Object.entries(drafts).forEach(([postId, data]: [string, any]) => {
-          if (data.status === "posted" || data.status === "skipped") {
+        Object.entries(drafts).forEach(([postId, data]: [string, unknown]) => {
+          const draft = data as { status?: string };
+          if (draft.status === "posted" || draft.status === "skipped") {
             posted.add(postId);
           }
         });

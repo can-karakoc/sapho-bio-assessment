@@ -20,13 +20,6 @@ export function HistoryView({ influencers }: HistoryViewProps) {
 
   const [filterInfluencer, setFilterInfluencer] = useState<string>("all");
   const [filterAction, setFilterAction] = useState<string>("all");
-  const [outcomeInputs, setOutcomeInputs] = useState<{
-    [key: string]: { likes: string; comments: string };
-  }>({});
-  const [regenerating, setRegenerating] = useState<string | null>(null);
-  const [regeneratedDrafts, setRegeneratedDrafts] = useState<{
-    [key: string]: string;
-  }>({});
 
   // Filter activities
   const filteredActivities = activities.filter((entry) => {
@@ -39,63 +32,6 @@ export function HistoryView({ influencers }: HistoryViewProps) {
     return true;
   });
 
-  const handleSaveOutcome = (entryId: string) => {
-    const input = outcomeInputs[entryId];
-    if (!input) return;
-
-    const outcome = {
-      likes: parseInt(input.likes) || 0,
-      comments: parseInt(input.comments) || 0,
-    };
-
-    updateActivityOutcome(entryId, outcome);
-
-    // Clear inputs
-    setOutcomeInputs((prev) => {
-      const next = { ...prev };
-      delete next[entryId];
-      return next;
-    });
-  };
-
-  const handleRegenerateWithFeedback = async (
-    entryId: string,
-    postId: string,
-    goal: "comment" | "dm",
-    brandVoice: string,
-    outcome: { likes: number; comments: number }
-  ) => {
-    setRegenerating(entryId);
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          postId,
-          config: {
-            goal,
-            brandVoice,
-            instructions: `The prior response received ${outcome.likes} likes and ${outcome.comments} comments; adjust the angle/hook accordingly.`,
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Regeneration failed");
-      }
-
-      const result = await response.json();
-      setRegeneratedDrafts((prev) => ({
-        ...prev,
-        [entryId]: result.text,
-      }));
-    } catch (err) {
-      console.error("Regeneration with feedback failed:", err);
-    } finally {
-      setRegenerating(null);
-    }
-  };
 
   return (
     <>
@@ -152,10 +88,6 @@ export function HistoryView({ influencers }: HistoryViewProps) {
         {filteredActivities.map((entry) => {
           const influencer = influencers.find((i) => i.id === entry.influencerId);
           if (!influencer) return null;
-
-          const hasOutcome = !!entry.outcome;
-          const outcomeInput = outcomeInputs[entry.id];
-          const regeneratedDraft = regeneratedDrafts[entry.id];
 
           return (
             <div
