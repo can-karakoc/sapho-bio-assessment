@@ -11,31 +11,31 @@ const GROQ_MODEL = process.env.GROQ_MODEL || 'groq/compound';
  * Clean up LLM response by removing meta-commentary and reasoning
  */
 function cleanResponse(text: string): string {
-  // Remove common meta-commentary patterns
-  const patterns = [
-    // Remove everything before "Final Comment" or similar headers
-    /^[\s\S]*?(?:final\s+(?:linkedin\s+)?comment|response|output)[\s\S]*?[:\-—]\s*/im,
-    // Remove "Reasoning" or "Approach" sections
-    /\*\*(?:reasoning|approach|rationale)[\s\S]*?(?=\n\n|$)/gim,
-    // Remove numbered explanation lists
-    /^\d+\.\s+\*\*[^*]+\*\*[\s\S]*?(?=\n\n|$)/gim,
-  ];
-
   let cleaned = text.trim();
 
-  // Apply patterns
-  for (const pattern of patterns) {
-    cleaned = cleaned.replace(pattern, '');
+  // Strategy 1: If there's a --- separator, take only what's before it
+  const separatorIndex = cleaned.indexOf('\n---');
+  if (separatorIndex > 0) {
+    cleaned = cleaned.substring(0, separatorIndex).trim();
   }
 
-  // If we see a blockquote (>), extract just that content
+  // Strategy 2: Remove "**LinkedIn comment**" or similar headers at the start
+  cleaned = cleaned.replace(/^\*\*(?:LinkedIn\s+)?(?:comment|response|output)\*\*\s*/i, '');
+
+  // Strategy 3: Remove everything after "Reasoning" or "Rationale" sections
+  cleaned = cleaned.replace(/\n+\*\*(?:Reasoning|Rationale|Approach)[\s\S]*$/i, '');
+
+  // Strategy 4: If we still see numbered lists with bold headers, stop before them
+  const numberedListMatch = cleaned.match(/^([\s\S]*?)\n+\d+\.\s+\*\*/);
+  if (numberedListMatch) {
+    cleaned = numberedListMatch[1].trim();
+  }
+
+  // Strategy 5: Extract blockquote if present
   const blockquoteMatch = cleaned.match(/^>\s*(.+?)$/m);
   if (blockquoteMatch) {
     return blockquoteMatch[1].trim();
   }
-
-  // Remove any remaining markdown bold/headers at the start
-  cleaned = cleaned.replace(/^[\s\S]*?(?=\w)/, '');
 
   return cleaned.trim();
 }
