@@ -10,6 +10,15 @@ import type { Post, Influencer, GeneratedResponse } from "@/lib/types";
 type BrandVoice = "peer-expert" | "warm" | "concise";
 type LengthTweak = "none" | "shorter" | "longer";
 
+const QUICK_TWEAKS = {
+  "no-pitch": "Do NOT mention or pitch Sapho's product; keep it pure peer engagement — add value or ask a question.",
+  "warmer": "Use a warmer, more personal tone.",
+  "technical": "Use more precise technical / domain language.",
+  "question": "End with a thoughtful question that invites a reply.",
+  "hook": "Open with a stronger, more specific hook.",
+  "sapho-angle": "Include a light, on-topic tie to Sapho's rapid release testing, only if genuinely relevant.",
+} as const;
+
 interface PostCardProps {
   post: Post;
   influencer: Influencer;
@@ -48,6 +57,7 @@ export function PostCard({
   const [showTweakPanel, setShowTweakPanel] = useState(false);
   const [lengthTweak, setLengthTweak] = useState<LengthTweak>("none");
   const [customInstruction, setCustomInstruction] = useState("");
+  const [selectedTweaks, setSelectedTweaks] = useState<Set<keyof typeof QUICK_TWEAKS>>(new Set());
   const tweakPanelRef = useRef<HTMLDivElement>(null);
 
   // Ephemeral state - NEVER persisted to files
@@ -254,6 +264,11 @@ export function PostCard({
       } else if (lengthTweak === "longer") {
         instructions += "Add a bit more depth (up to ~4 sentences). ";
       }
+
+      // Add quick tweaks
+      selectedTweaks.forEach((tweakKey) => {
+        instructions += QUICK_TWEAKS[tweakKey] + " ";
+      });
 
       // Add custom instruction
       if (customInstruction.trim()) {
@@ -780,6 +795,47 @@ export function PostCard({
                         >
                           Longer
                         </button>
+                      </div>
+                    </div>
+
+                    {/* Quick tweaks - multi-select chips */}
+                    <div className="mb-3">
+                      <label className="font-sans text-[10px] text-muted uppercase tracking-tight block mb-1.5">
+                        Quick tweaks
+                      </label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {Object.entries(QUICK_TWEAKS).map(([key, _directive]) => {
+                          const isSelected = selectedTweaks.has(key as keyof typeof QUICK_TWEAKS);
+                          const labels: Record<string, string> = {
+                            "no-pitch": "No pitch",
+                            "warmer": "Warmer",
+                            "technical": "More technical",
+                            "question": "Add a question",
+                            "hook": "Punchier hook",
+                            "sapho-angle": "Add Sapho angle",
+                          };
+                          return (
+                            <button
+                              key={key}
+                              onClick={() => {
+                                const newTweaks = new Set(selectedTweaks);
+                                if (isSelected) {
+                                  newTweaks.delete(key as keyof typeof QUICK_TWEAKS);
+                                } else {
+                                  newTweaks.add(key as keyof typeof QUICK_TWEAKS);
+                                }
+                                setSelectedTweaks(newTweaks);
+                              }}
+                              className={`font-mono text-[10px] px-2 py-1 rounded-sm transition-all uppercase tracking-tight ${
+                                isSelected
+                                  ? "bg-highlight-mint text-ink border border-highlight-teal"
+                                  : "bg-bg text-muted border border-line hover:border-highlight-teal"
+                              }`}
+                            >
+                              {labels[key]}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 

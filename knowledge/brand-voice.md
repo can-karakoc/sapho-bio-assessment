@@ -26,6 +26,7 @@ Sapho Bio's voice is:
 - Do not make absolute claims the published data cannot support, and never imply that speed comes at the expense of compliance.
 - Do not discuss pricing, unannounced products, or named customers.
 - Do not offer regulatory advice that could be read as telling a facility how to satisfy an inspector.
+- Do not pitch or mention Sapho's product on public comments (engagement responses); add genuine value or ask a thoughtful question instead. Reserve any product mention for direct messages and lead-generation, and only when it is genuinely relevant to the post.
 
 ## LinkedIn Response Style
 
