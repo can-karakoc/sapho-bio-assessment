@@ -353,19 +353,8 @@ export function PostCard({
           }),
         });
 
-        // Record in session activity
-        addActivity({
-          id: `${post.id}-${Date.now()}`,
-          postId: post.id,
-          influencerId: influencer.id,
-          influencerName: influencer.name,
-          postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
-          goal: activeGoal,
-          model: draftResponse.model,
-          text: draftResponse.text,
-          action: "regenerated",
-          createdAt: new Date().toISOString(),
-        });
+        // DON'T add to History - only posted responses go to History
+        // Regeneration is just drafting, not a final action
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Regeneration failed");
@@ -393,21 +382,8 @@ export function PostCard({
         }),
       });
 
-      // Record in session activity
-      if (draft) {
-        addActivity({
-          id: `${post.id}-${Date.now()}`,
-          postId: post.id,
-          influencerId: influencer.id,
-          influencerName: influencer.name,
-          postSnippet: post.text.slice(0, 120) + (post.text.length > 120 ? "..." : ""),
-          goal: activeGoal,
-          model: draft.model,
-          text: draftText,
-          action: "copied",
-          createdAt: new Date().toISOString(),
-        });
-      }
+      // DON'T add to History - only posted responses go to History
+      // Copy is just a convenience action
     } catch (err) {
       console.error("Copy failed:", err);
     }
